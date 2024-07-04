@@ -1,15 +1,22 @@
 #include <stdexcept>
 #include <SDL_ttf.h>
-#include "TextObject.h"
+#include "TextComponent.h"
 #include "Renderer.h"
 #include "Font.h"
 #include "Texture2D.h"
+#include "TransformComponent.h"
+#include "GameObject.h"
 
-dae::TextObject::TextObject(const std::string& text, std::shared_ptr<Font> font) 
-	: m_needsUpdate(true), m_text(text), m_font(std::move(font)), m_textTexture(nullptr)
-{ }
+dae::TextComponent::TextComponent(GameObject* ownerObject, const std::string& text, std::shared_ptr<Font> font)
+	: Component(ownerObject)
+	, m_needsUpdate(true)
+	, m_text(text)
+	, m_font(std::move(font))
+{
 
-void dae::TextObject::Update()
+}
+
+void dae::TextComponent::Update(float const)
 {
 	if (m_needsUpdate)
 	{
@@ -30,25 +37,27 @@ void dae::TextObject::Update()
 	}
 }
 
-void dae::TextObject::Render() const
+void dae::TextComponent::Render() const
 {
 	if (m_textTexture != nullptr)
 	{
-		const auto& pos = m_transform.GetPosition();
+		auto owner{ GetOwner() };
+		if (owner == nullptr)
+			return;
+
+		auto transformCpntOwner{ owner->GetComponent<TransformComponent>() };
+		if (transformCpntOwner == nullptr)
+			return;
+
+		const auto& pos = transformCpntOwner->GetPosition().GetPosition();
 		Renderer::GetInstance().RenderTexture(*m_textTexture, pos.x, pos.y);
 	}
 }
 
 // This implementation uses the "dirty flag" pattern
-void dae::TextObject::SetText(const std::string& text)
+void dae::TextComponent::SetText(const std::string& text)
 {
 	m_text = text;
 	m_needsUpdate = true;
 }
-
-void dae::TextObject::SetPosition(const float x, const float y)
-{
-	m_transform.SetPosition(x, y, 0.0f);
-}
-
 
