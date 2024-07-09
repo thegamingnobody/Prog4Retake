@@ -8,26 +8,64 @@
 
 namespace dae
 {
-    class TextureComponent : public Component
-    {
-    public:
-        void Render() const;
+	struct SourceRectangle
+	{
+		float BaseWidth;
+		float BaseHeight;
+		float SrcWidth;
+		float SrcHeight;
+		float SrcPosX;
+		float SrcPosY;
 
-        void SetTexture(const std::string& filename);
-        void SetTexture(const std::shared_ptr<Texture2D>& texture);
+		SourceRectangle(float baseWidth, float baseHeight, float srcWidth, float srcHeight, float srcPosX, float srcPosY)
+		{
+			BaseWidth = baseWidth;
+			BaseHeight = baseHeight;
+			SrcWidth = srcWidth;
+			SrcHeight = srcHeight;
+			SrcPosX = srcPosX;
+			SrcPosY = srcPosY;
+		}
+		SourceRectangle()
+		{
+			BaseWidth	= 1;
+			BaseHeight	= 1;
+			SrcWidth	= 1;
+			SrcHeight	= 1;
+			SrcPosX		= 0;
+			SrcPosY		= 0;
+		}
 
-        glm::ivec2 GetSize() const { return m_Texture->GetSize(); }
+	};
+	class TextureComponent : public Component
+	{
+	public:
 
-        TextureComponent(GameObject* object, const std::string& filename);
-        virtual ~TextureComponent() override = default;
-        TextureComponent(const TextureComponent& other) = delete;
-        TextureComponent(TextureComponent&& other) = delete;
-        TextureComponent& operator= (const TextureComponent& other) = delete;
-        TextureComponent& operator=(TextureComponent&& other) = delete;
+		void Render() const;
 
-    private:
-        std::shared_ptr<Texture2D> m_Texture;
-    };
+		void SetTexture(const std::string& filename);
+		void SetTexture(const std::shared_ptr<Texture2D>& texture);
+
+		void SetSourceRectangle(float srcPosX, float srcPosY, float srcWidth, float srcHeight);
+		void SetSourceRectangle(const SourceRectangle& newSourceRect);
+
+		void SetRenderScale(float newScale);
+
+		glm::ivec2 GetSize() const { return m_Texture->GetSize(); }
+
+		TextureComponent(GameObject* object, const std::string& filename);
+		TextureComponent(GameObject* object, const std::string& filename, const SourceRectangle& sourceRect, float renderScale = 1);
+		virtual ~TextureComponent() override = default;
+		TextureComponent(const TextureComponent& other) = delete;
+		TextureComponent(TextureComponent&& other) = delete;
+		TextureComponent& operator= (const TextureComponent& other) = delete;
+		TextureComponent& operator=(TextureComponent&& other) = delete;
+
+	private:
+		std::shared_ptr<Texture2D> m_Texture;
+		SourceRectangle m_SrcRect;
+		float m_RenderScale;
+	};
 }
 
 #endif
