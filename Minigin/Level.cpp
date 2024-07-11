@@ -33,7 +33,7 @@ dae::SourceRectangle dae::LevelComponent::GetSourceRect(int column, int row) con
 	result.SrcWidth = tileSize;
 	result.SrcHeight = tileSize;
 	result.SrcPosY = static_cast<float>(tileID % nrOfTilesVertical) * result.SrcHeight;
-	result.SrcPosX = ((tileID - result.SrcPosY) / nrOfTilesVertical) * result.SrcWidth;
+	result.SrcPosX = static_cast<float>(tileID / nrOfTilesVertical) * result.SrcWidth;
 
 	return result;
 }
@@ -76,8 +76,5 @@ void dae::LevelComponent::Render() const
 			transformCpnt->SetWorldPosition(m_BasePosition.x + (row * (tileSize * 0.5f)) - (column * (tileSize * 0.5f)), m_BasePosition.y + (row * (tileSize * 0.75f)) + (column * (tileSize * 0.75f)));
 			textureCpnt->Render();
 		}
-		//transformCpnt->Move(-(m_Level[column].size() * (tileSize * 0.5f)), -(m_Level[column].size() * (tileSize * 0.75f)));
-		//transformCpnt->Move(-(tileSize * 0.5f), (tileSize * 0.75f));
-		//transformCpnt->SetLocalPosition(StartPos.x + (column * (tileSize / 2)), StartPos.y + (column * (tileSize / 2)));
 	}
 }
