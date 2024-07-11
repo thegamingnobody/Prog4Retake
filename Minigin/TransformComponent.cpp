@@ -30,6 +30,36 @@ void dae::TransformComponent::SetLocalPosition(const Transform& newPos)
 	SetLocalPosition(newPos.GetPosition().x, newPos.GetPosition().y);
 }
 
+void dae::TransformComponent::SetWorldPosition(float const x, float const y)
+{
+	m_WorldPosition.SetPosition(x, y, 0);
+}
+
+void dae::TransformComponent::SetWorldPosition(const glm::vec3& newPos)
+{
+	SetWorldPosition(newPos.x, newPos.y);
+}
+
+void dae::TransformComponent::SetWorldPosition(const Transform& newPos)
+{
+	SetWorldPosition(newPos.GetPosition().x, newPos.GetPosition().y);
+}
+
+void dae::TransformComponent::Move(float x, float y)
+{
+	m_LocalPosition.SetPosition(m_LocalPosition.GetPosition().x + x, m_LocalPosition.GetPosition().y + y, 0);
+}
+
+void dae::TransformComponent::Move(const glm::vec3& newPos)
+{
+	Move(newPos.x, newPos.y);
+}
+
+void dae::TransformComponent::Move(const Transform& newPos)
+{
+	Move(newPos.GetPosition().x, newPos.GetPosition().y);
+}
+
 void dae::TransformComponent::UpdateTransform()
 {
 	auto owner{ GetOwner() };
@@ -46,6 +76,11 @@ void dae::TransformComponent::UpdateTransform()
 		{
 			m_WorldPosition = transformCpntParentOfOwner->GetPosition() + m_LocalPosition;
 		}
+	}
+	else
+	{
+		m_WorldPosition = m_WorldPosition + m_LocalPosition;
+		m_LocalPosition.SetPosition(0.0f, 0.0f, 0.0f);
 	}
 	
 }

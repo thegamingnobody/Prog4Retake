@@ -47,55 +47,26 @@ void dae::Renderer::Destroy()
 	}
 }
 
-void dae::Renderer::RenderTexture(const Texture2D& texture, const float x, const float y) const
-{
-	SDL_Rect dst{};
-	dst.x = static_cast<int>(x);
-	dst.y = static_cast<int>(y);
-
-	SDL_QueryTexture(texture.GetSDLTexture(), nullptr, nullptr, &dst.w, &dst.h);
-	SDL_RenderCopy(GetSDLRenderer(), texture.GetSDLTexture(), nullptr, &dst);
-}
-
-void dae::Renderer::RenderTexture(const Texture2D& texture, float x, float y, const SourceRectangle& srcRect, float renderScale) const
-{
-	SDL_Rect dst{};
-	SDL_Rect src{};
-
-	dst.x = static_cast<int>(x);
-	dst.y = static_cast<int>(y);
-	dst.w = static_cast<int>(renderScale * srcRect.SrcWidth);
-	dst.h = static_cast<int>(renderScale * srcRect.SrcHeight);
-
-	src.x = static_cast<int>(srcRect.SrcPosX);
-	src.y = static_cast<int>(srcRect.SrcPosY);
-	src.w = static_cast<int>(srcRect.SrcWidth);
-	src.h = static_cast<int>(srcRect.SrcHeight);
-
-	//SDL_QueryTexture(texture.GetSDLTexture(), nullptr, nullptr, &dst.w, &dst.h);
-	SDL_RenderCopy(GetSDLRenderer(), texture.GetSDLTexture(), &src, &dst);
-}
-
-void dae::Renderer::RenderTexture(const Texture2D& texture, const float x, const float y, const float width, const float height, float renderScale) const
-{
-	SDL_Rect dst{};
-	dst.x = static_cast<int>(x);
-	dst.y = static_cast<int>(y);
-	dst.w = static_cast<int>(renderScale * width);
-	dst.h = static_cast<int>(renderScale * height);
-
-	SDL_RenderCopy(GetSDLRenderer(), texture.GetSDLTexture(), nullptr, &dst);
-}
-
 void dae::Renderer::RenderTexture(const Texture2D& texture, float x, float y, float width, float height, const SourceRectangle& srcRect, float renderScale) const
 {
 	SDL_Rect dst{};
 	SDL_Rect src{};
 
+	float textureWidth{ width };
+	float textureHeight{ height };
+	if (textureWidth == 0 or textureHeight == 0)
+	{
+		textureWidth = srcRect.SrcWidth;
+		textureHeight = srcRect.SrcHeight;
+		//textureWidth = static_cast<float>(texture.GetSize().x);
+		//textureHeight = static_cast<float>(texture.GetSize().y);
+	}
+
+
 	dst.x = static_cast<int>(x);
 	dst.y = static_cast<int>(y);
-	dst.w = static_cast<int>(renderScale * width);
-	dst.h = static_cast<int>(renderScale * height);
+	dst.w = static_cast<int>(renderScale * textureWidth);
+	dst.h = static_cast<int>(renderScale * textureHeight);
 	
 	src.x = static_cast<int>(srcRect.SrcPosX);
 	src.y = static_cast<int>(srcRect.SrcPosY);

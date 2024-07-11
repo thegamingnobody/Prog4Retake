@@ -50,6 +50,7 @@ namespace dae
 		void SetSourceRectangle(const SourceRectangle& newSourceRect);
 
 		void SetRenderScale(float newScale);
+		float GetRenderScale() const { return m_RenderScale; }
 
 		glm::ivec2 GetSize() const { return m_Texture->GetSize(); }
 

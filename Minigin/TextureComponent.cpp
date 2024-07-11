@@ -15,7 +15,7 @@ void dae::TextureComponent::Render() const
 		if (transformComp)
 		{
 			auto& pos{ transformComp->GetPosition().GetPosition() };
-			Renderer::GetInstance().RenderTexture(*m_Texture, pos.x, pos.y, m_SrcRect, m_RenderScale);
+			Renderer::GetInstance().RenderTexture(*m_Texture, pos.x, pos.y, 0, 0, m_SrcRect, m_RenderScale);
 		}
 		else
 		{

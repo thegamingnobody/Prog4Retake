@@ -16,6 +16,14 @@ namespace dae
 		void SetLocalPosition(const glm::vec3& newPos);
 		void SetLocalPosition(const Transform& newPos);
 
+		void SetWorldPosition(float x, float y);
+		void SetWorldPosition(const glm::vec3& newPos);
+		void SetWorldPosition(const Transform& newPos);
+
+		void Move(float x, float y);
+		void Move(const glm::vec3& newPos);
+		void Move(const Transform& newPos);
+
 	private:
 		bool m_ShouldUpdate{ true };
 		Transform m_LocalPosition;
