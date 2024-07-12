@@ -40,8 +40,8 @@ dae::SourceRectangle dae::LevelComponent::GetSourceRect(int column, int row) con
 
 void dae::LevelComponent::CreateLevel()
 {
-	int const nrOfColumns{ 5 };
-	int const nrOfRows{ 5 };
+	int const nrOfColumns{ 7 };
+	int const nrOfRows{ 7 };
 
 	for (int column = 0; column < nrOfColumns; column++)
 	{
@@ -77,4 +77,13 @@ void dae::LevelComponent::Render() const
 			textureCpnt->Render();
 		}
 	}
+}
+
+bool dae::LevelComponent::DoesTileExist(int column, int row)
+{
+	if (m_Level.size() < column or column < 0) return false;
+
+	if (m_Level[column].size() < row or row < 0) return false;
+
+	return true;
 }

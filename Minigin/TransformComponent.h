@@ -2,10 +2,11 @@
 #include "Component.h"
 #include "Transform.h"
 #include <glm/ext/vector_float3.hpp>
+#include "Observer.h"
 
 namespace dae
 {
-	class TransformComponent : public Component
+	class TransformComponent : public Component, public Observer
 	{
 	public:
 		TransformComponent(dae::GameObject* object, float x = 0, float y = 0);
@@ -23,6 +24,8 @@ namespace dae
 		void Move(float x, float y);
 		void Move(const glm::vec3& newPos);
 		void Move(const Transform& newPos);
+
+		void Notify(const Event& event) override;
 
 	private:
 		bool m_ShouldUpdate{ true };

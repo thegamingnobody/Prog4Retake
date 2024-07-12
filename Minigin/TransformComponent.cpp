@@ -1,5 +1,6 @@
 #include "TransformComponent.h"
 #include "GameObject.h"
+#include "EventManager.h"
 
 dae::TransformComponent::TransformComponent(dae::GameObject* object, float const x, float const y)
 	: Component(object)
@@ -7,6 +8,8 @@ dae::TransformComponent::TransformComponent(dae::GameObject* object, float const
 	, m_LocalPosition(Transform(0, 0, 0))
 	, m_WorldPosition(Transform(x, y, 0))
 {
+	m_TargetNumber = object->GetObjectID();
+	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::MoveObject);
 }
 
 const dae::Transform& dae::TransformComponent::GetPosition()
@@ -58,6 +61,20 @@ void dae::TransformComponent::Move(const glm::vec3& newPos)
 void dae::TransformComponent::Move(const Transform& newPos)
 {
 	Move(newPos.GetPosition().x, newPos.GetPosition().y);
+}
+
+void dae::TransformComponent::Notify(const Event& event)
+{
+	switch (event.m_type)
+	{
+	case dae::EventType::MoveObject:
+	{
+		auto castedArguments{ std::get<0>(event.GetArgumentsAsTuple<const glm::vec3&>()) };
+		Move(castedArguments.x, castedArguments.y);
+	}
+	break;
+	}
+
 }
 
 void dae::TransformComponent::UpdateTransform()

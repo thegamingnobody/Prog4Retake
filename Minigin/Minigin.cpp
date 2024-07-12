@@ -7,6 +7,7 @@
 #include "Minigin.h"
 #include "InputManager.h"
 #include "SceneManager.h"
+#include "EventManager.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
 #include <chrono>
@@ -67,6 +68,8 @@ dae::Minigin::Minigin(const std::string &dataPath)
 	Renderer::GetInstance().Init(g_window);
 
 	ResourceManager::GetInstance().Init(dataPath);
+
+	EventManager::GetInstance().Init();
 }
 
 dae::Minigin::~Minigin()
@@ -84,6 +87,7 @@ void dae::Minigin::Run(const std::function<void()>& load)
 	auto& renderer = Renderer::GetInstance();
 	auto& sceneManager = SceneManager::GetInstance();
 	auto& input = InputManager::GetInstance();
+	auto& eventManager = EventManager::GetInstance();
 
 	int constexpr targetFPS{ 165 };
 
@@ -101,6 +105,8 @@ void dae::Minigin::Run(const std::function<void()>& load)
 		lag += deltaTime;
 
 		doContinue = input.ProcessInput();
+		eventManager.ProcessQueue();
+
 		sceneManager.Update(deltaTime);
 		renderer.Render();
 

@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "Component.h"
+#include "Event.h"
 
 namespace dae
 {
@@ -61,12 +62,17 @@ namespace dae
 			return true;
 		}
 
-		GameObject(const std::string& ObjectName = "");
+		GameObject(const std::string& ObjectName = "", int const playerNumber = -1);
 		~GameObject();
 		GameObject(const GameObject& other) = delete;
 		GameObject(GameObject&& other) = delete;
 		GameObject& operator=(const GameObject& other) = delete;
 		GameObject& operator=(GameObject&& other) = delete;
+
+		int GetObjectID() const { return m_PlayerNumber; }
+		void SetObjectID(int const newID) { m_PlayerNumber = newID; }
+
+		void NotifyComponents(const Event& event);
 
 	private:
 		std::string const m_ObjectName;
@@ -76,5 +82,6 @@ namespace dae
 
 		std::vector<std::shared_ptr<Component>> m_pComponents{};
 
+		int m_PlayerNumber;
 	};
 }

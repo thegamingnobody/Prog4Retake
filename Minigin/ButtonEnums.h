@@ -81,6 +81,10 @@
 			F11 = SDL_SCANCODE_F11,
 			F12 = SDL_SCANCODE_F12,
 
+			ArrowUp = SDL_SCANCODE_UP,
+			ArrowDown = SDL_SCANCODE_DOWN,
+			ArrowLeft = SDL_SCANCODE_LEFT,
+			ArrowRight = SDL_SCANCODE_RIGHT,
 		};
 
 		enum class ControllerButtons

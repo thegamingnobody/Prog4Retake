@@ -5,15 +5,27 @@
 #include "TextureComponent.h"
 
 
-dae::GameObject::GameObject(const std::string& ObjectName)
+dae::GameObject::GameObject(const std::string& ObjectName, int const playerNumber)
 	: m_ObjectName(ObjectName)
 	, m_pOwnerObject( nullptr )
 	, m_pChildObjects()
 	, m_pComponents()
+	, m_PlayerNumber(playerNumber)
 {
 }
 
 dae::GameObject::~GameObject() = default;
+
+void dae::GameObject::NotifyComponents(const Event& event)
+{
+	for (auto& component : m_pComponents)
+	{
+		if (auto derivedComponent = dynamic_cast<Observer*>(component.get()))
+		{
+			derivedComponent->Notify(event);
+		}
+	}
+}
 
 void dae::GameObject::Update(float const deltaTime)
 {

@@ -25,6 +25,8 @@ namespace dae
 
 		void Render() const override;
 
+		bool DoesTileExist(int column, int row);
+
 	private:
 		std::vector<std::vector<int>> m_Level;
 		glm::vec3 m_BasePosition;

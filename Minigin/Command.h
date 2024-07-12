@@ -2,6 +2,7 @@
 #define DAE_COMMAND
 
 #include "GameObject.h"
+
 namespace dae
 {
 	class Command
