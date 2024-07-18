@@ -15,6 +15,9 @@ namespace dae
 		IsTileValid,
 		ConfirmMovement,
 		MoveObjectTo,
+		MoveFinished,
+
+		ToggleTile,
 
 		PlaySound,
 		StopSound,

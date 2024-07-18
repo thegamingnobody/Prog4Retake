@@ -21,6 +21,7 @@ dae::LevelComponent::LevelComponent(GameObject* ownerObject, float tileSide, flo
 		m_BasePosition = transformCpnt->GetPosition().GetPosition();
 	}
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::IsTileValid);
+	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::ToggleTile);
 }
 
 dae::SourceRectangle dae::LevelComponent::GetSourceRect(int column, int row) const
@@ -99,19 +100,29 @@ void dae::LevelComponent::Notify(const Event& event)
 	switch (event.m_type)
 	{
 	case EventType::IsTileValid:
-		auto arguments{ event.GetArgumentsAsTuple<dae::TileCoordinates, dae::TileCoordinates>() };
-		auto pos	{ std::get<0>(arguments) };
-		auto direction{ std::get<1>(arguments) };
+		{
+			auto arguments{ event.GetArgumentsAsTuple<dae::TileCoordinates, dae::TileCoordinates>() };
+			auto pos	{ std::get<0>(arguments) };
+			auto direction{ std::get<1>(arguments) };
 
-		std::tuple<bool, glm::vec3> newEventArguments{ DoesTileExist(pos.m_Column + direction.m_Column, pos.m_Row + direction.m_Row), ConvertToWorld(direction.m_Column, direction.m_Row) };
+			std::tuple<bool, glm::vec3> newEventArguments{ DoesTileExist(pos.m_Column + direction.m_Column, pos.m_Row + direction.m_Row), ConvertToWorld(direction.m_Column, direction.m_Row) };
 
-		Event eventToNotify{ dae::EventType::ConfirmMovement, newEventArguments, -1 };
+			Event eventToNotify{ dae::EventType::ConfirmMovement, newEventArguments, -1 };
 
-		dae::EventManager::GetInstance().PushEvent(eventToNotify);
+			dae::EventManager::GetInstance().PushEvent(eventToNotify);
 
-		ToggleTile(pos.m_Column + direction.m_Column, pos.m_Row + direction.m_Row);
+			break;
 
-		break;
+		}
+	case EventType::ToggleTile:
+		{
+			auto arguments{ event.GetArgumentsAsTuple<dae::TileCoordinates, dae::TileCoordinates>() };
+			auto pos	{ std::get<0>(arguments) };
+			auto direction{ std::get<1>(arguments) };
+			ToggleTile(pos.m_Column, pos.m_Row);
+			break;
+			
+		}
 	}
 }
 

@@ -11,6 +11,7 @@ namespace dae
 	public:
 		TransformComponent(dae::GameObject* object, float x = 0, float y = 0);
 
+		void Update(float const deltaTime) override;
 
 		const Transform& GetPosition(); //calculates current world pos
 		void SetLocalPosition(float x, float y);
@@ -35,6 +36,12 @@ namespace dae
 		bool m_ShouldUpdate{ true };
 		Transform m_LocalPosition;
 		Transform m_WorldPosition;
+
+		Transform m_Direction;
+
+		float m_AccumulatedTime;
+
+		bool m_IsMoving;
 
 		void UpdateTransform();
 	};
