@@ -109,6 +109,7 @@ void dae::LevelComponent::Notify(const Event& event)
 
 		dae::EventManager::GetInstance().PushEvent(eventToNotify);
 
+		ToggleTile(pos.m_Column + direction.m_Column, pos.m_Row + direction.m_Row);
 
 		break;
 	}
@@ -120,4 +121,12 @@ glm::vec3 dae::LevelComponent::ConvertToWorld(int columnOffset, int rowOffset)
 	result = glm::vec3(((result.x * 0.50f) - (result.y * 0.50f)), ((result.x * 0.75f) + (result.y * 0.75f)), 0);
 	result *= m_TileSide * m_ZoomLevel;
 	return result;
+}
+
+void dae::LevelComponent::ToggleTile(int column, int row)
+{
+	if (DoesTileExist(column, row))
+	{
+		m_Level[row][column] = 1;
+	}
 }

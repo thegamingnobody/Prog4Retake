@@ -12,6 +12,13 @@ dae::QbertComponent::QbertComponent(GameObject* object, int startColumn, int sta
 	m_TargetNumber = object->GetObjectID();
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::RequestMovement);
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::ConfirmMovement);
+
+	std::tuple<const glm::vec3&> eventArguments{ glm::vec3(0.0f, 0.0f, 0.0f) };
+
+	Event eventToNotify{ dae::EventType::RequestMovement, eventArguments, m_TargetNumber };
+
+	dae::EventManager::GetInstance().PushEvent(eventToNotify);
+
 }
 
 void dae::QbertComponent::Update(float const)

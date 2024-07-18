@@ -44,6 +44,8 @@ namespace dae
 
 		float GetTileSide() const { return m_TileSide; }
 
+		void ToggleTile(int column, int row);
+
 	private:
 		std::vector<std::vector<int>> m_Level;
 		glm::vec3 m_BasePosition;
