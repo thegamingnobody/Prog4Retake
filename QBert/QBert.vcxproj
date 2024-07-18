@@ -183,6 +183,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPat
     <ClCompile Include="..\Minigin\Level.cpp" />
     <ClCompile Include="..\Minigin\MoveCommand.cpp" />
     <ClCompile Include="QBert.cpp" />
+    <ClCompile Include="QbertComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Minigin\Command.h" />
@@ -191,6 +192,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPat
     <ClInclude Include="CommandIncludes.h" />
     <ClInclude Include="ComponentIncludes.h" />
     <ClInclude Include="ManagerIncludes.h" />
+    <ClInclude Include="QbertComponent.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

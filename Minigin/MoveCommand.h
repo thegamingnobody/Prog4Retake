@@ -8,7 +8,7 @@ namespace dae
     class MoveCommand final : public Command
     {
     public:
-        MoveCommand(int const playerNumber, glm::vec3 direction, float zoomLevel = 1);
+        MoveCommand(int const playerNumber, glm::vec3 direction);
 
         void Execute() override;
 

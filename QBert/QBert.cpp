@@ -11,6 +11,7 @@
 #include "ManagerIncludes.h"
 
 #include <Scene.h>
+#include "QbertComponent.h"
 
 void load()
 {
@@ -39,33 +40,46 @@ void load()
 	const float globalZoom{ 2.0f };
 
 	go = std::make_shared<dae::GameObject>("Level");
+
 	dae::SourceRectangle sourceRect = dae::SourceRectangle(192.0f, 96.0f, tileSize, tileSize, 0.0f, 0.0f);
+
 	auto textureDimentions = go->AddComponent<dae::TextureComponent>("Tiles.png", sourceRect, globalZoom).GetSize();
+
 	go->AddComponent<dae::TransformComponent>(static_cast<float>(dae::Minigin::m_WindowWidth * 0.50f) - (tileSize * 0.50f),
 		static_cast<float>(dae::Minigin::m_WindowHeight * 0.25f) - (tileSize * 0.50f));
-	go->AddComponent<dae::LevelComponent>();
+	
+	go->AddComponent<dae::LevelComponent>(tileSize, globalZoom);
+
 	scene.Add(go);
+
 #pragma endregion
+
+#pragma region Input
 
 	int controllerIndex{ inputManager.AddInputDevice(dae::Action::DeviceType::Controller) };
 	int keyboardIndex{ inputManager.AddInputDevice(dae::Action::DeviceType::Keyboard) };
 
-	inputManager.AddAction(dae::ControllerButtons::DpadUp, dae::InputType::PressedThisFrame, std::make_shared<dae::MoveCommand>(controllerIndex, glm::vec3(0, -1, 0), globalZoom), controllerIndex);
-	inputManager.AddAction(dae::ControllerButtons::DpadDown, dae::InputType::PressedThisFrame, std::make_shared<dae::MoveCommand>(controllerIndex, glm::vec3(0, 1, 0), globalZoom), controllerIndex);
-	inputManager.AddAction(dae::ControllerButtons::DpadLeft, dae::InputType::PressedThisFrame, std::make_shared<dae::MoveCommand>(controllerIndex, glm::vec3(-1, 0, 0), globalZoom), controllerIndex);
-	inputManager.AddAction(dae::ControllerButtons::DpadRight, dae::InputType::PressedThisFrame, std::make_shared<dae::MoveCommand>(controllerIndex, glm::vec3(1, 0, 0), globalZoom), controllerIndex);
+	inputManager.AddAction(dae::ControllerButtons::DpadUp,		dae::InputType::PressedThisFrame, std::make_shared<dae::MoveCommand>(controllerIndex,	glm::vec3( 0, -1,  0)), controllerIndex);
+	inputManager.AddAction(dae::ControllerButtons::DpadDown,	dae::InputType::PressedThisFrame, std::make_shared<dae::MoveCommand>(controllerIndex,	glm::vec3( 0,  1,  0)), controllerIndex);
+	inputManager.AddAction(dae::ControllerButtons::DpadLeft,	dae::InputType::PressedThisFrame, std::make_shared<dae::MoveCommand>(controllerIndex,	glm::vec3(-1,  0,  0)), controllerIndex);
+	inputManager.AddAction(dae::ControllerButtons::DpadRight,	dae::InputType::PressedThisFrame, std::make_shared<dae::MoveCommand>(controllerIndex,	glm::vec3( 1,  0,  0)), controllerIndex);
 
-	inputManager.AddAction(dae::KeyboardKeys::ArrowUp, dae::InputType::PressedThisFrame, std::make_shared<dae::MoveCommand>(keyboardIndex, glm::vec3(0, -1, 0), globalZoom), keyboardIndex);
-	inputManager.AddAction(dae::KeyboardKeys::ArrowDown, dae::InputType::PressedThisFrame, std::make_shared<dae::MoveCommand>(keyboardIndex, glm::vec3(0, 1, 0), globalZoom), keyboardIndex);
-	inputManager.AddAction(dae::KeyboardKeys::ArrowLeft, dae::InputType::PressedThisFrame, std::make_shared<dae::MoveCommand>(keyboardIndex, glm::vec3(-1, 0, 0), globalZoom), keyboardIndex);
-	inputManager.AddAction(dae::KeyboardKeys::ArrowRight, dae::InputType::PressedThisFrame, std::make_shared<dae::MoveCommand>(keyboardIndex, glm::vec3(1, 0, 0), globalZoom), keyboardIndex);
+	inputManager.AddAction(dae::KeyboardKeys::ArrowUp,			dae::InputType::PressedThisFrame, std::make_shared<dae::MoveCommand>(keyboardIndex,		glm::vec3( 0, -1,  0)), keyboardIndex);
+	inputManager.AddAction(dae::KeyboardKeys::ArrowDown,		dae::InputType::PressedThisFrame, std::make_shared<dae::MoveCommand>(keyboardIndex,		glm::vec3( 0,  1,  0)), keyboardIndex);
+	inputManager.AddAction(dae::KeyboardKeys::ArrowLeft,		dae::InputType::PressedThisFrame, std::make_shared<dae::MoveCommand>(keyboardIndex,		glm::vec3(-1,  0,  0)), keyboardIndex);
+	inputManager.AddAction(dae::KeyboardKeys::ArrowRight,		dae::InputType::PressedThisFrame, std::make_shared<dae::MoveCommand>(keyboardIndex,		glm::vec3( 1,  0,  0)), keyboardIndex);
+
+#pragma endregion
 
 #pragma region player
+
 	go = std::make_shared<dae::GameObject>("Player", -1);
 	sourceRect = dae::SourceRectangle(68.0f, 16.0f, 17.0f, 16.0f, 51.0f, 0.0f);
 	textureDimentions = go->AddComponent<dae::TextureComponent>("Qbert1.png", sourceRect, globalZoom).GetSize();
 	go->AddComponent<dae::TransformComponent>(static_cast<float>(dae::Minigin::m_WindowWidth * 0.50f) - (textureDimentions.x * 0.00f),
 		static_cast<float>(dae::Minigin::m_WindowHeight * 0.25f) - (textureDimentions.y * 1.50f));
+	go->AddComponent<dae::QbertComponent>();
+	
 	scene.Add(go);
 #pragma endregion
 

@@ -5,13 +5,24 @@
 #include "Transform.h"
 #include <vector>
 #include "TextureComponent.h"
+#include <Observer.h>
 
 namespace dae
 {
-	class LevelComponent final : public Component
+	struct TileCoordinates
+	{
+		TileCoordinates(int column, int row) 
+		{
+			m_Column = column; 
+			m_Row = row; 
+		}
+		int m_Column;
+		int m_Row;
+	};
+	class LevelComponent final : public Component, public Observer
 	{
 	public:
-		LevelComponent(GameObject* ownerObject);
+		LevelComponent(GameObject* ownerObject, float tileSide, float zoomLevel);
 
 		virtual ~LevelComponent() = default;
 		LevelComponent(const LevelComponent& other) = delete;
@@ -27,9 +38,17 @@ namespace dae
 
 		bool DoesTileExist(int column, int row);
 
+		void Notify(const Event& event) override;
+
+		glm::vec3 ConvertToWorld(int columnOffset, int rowOffset);
+
+		float GetTileSide() const { return m_TileSide; }
+
 	private:
 		std::vector<std::vector<int>> m_Level;
 		glm::vec3 m_BasePosition;
+		float const m_TileSide;
+		float const m_ZoomLevel;
 
 	};
 }

@@ -22,6 +22,12 @@
     <Filter Include="Header Files\IncludeHeaders">
       <UniqueIdentifier>{2e080239-2919-477c-b588-f4de3319a372}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Components">
+      <UniqueIdentifier>{de8d0a43-ad93-487b-a933-8ea23d3c6794}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Components">
+      <UniqueIdentifier>{0d3cd310-730e-4f74-b4df-381dbcc533a8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="QBert.cpp">
@@ -35,6 +41,9 @@
     </ClCompile>
     <ClCompile Include="..\Minigin\MoveCommand.cpp">
       <Filter>Source Files\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="QbertComponent.cpp">
+      <Filter>Source Files\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -55,6 +64,9 @@
     </ClInclude>
     <ClInclude Include="ManagerIncludes.h">
       <Filter>Header Files\IncludeHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="QbertComponent.h">
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

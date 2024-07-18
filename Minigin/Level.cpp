@@ -1,19 +1,26 @@
 #include "Level.h"
-#include "Renderer.h"
-#include "GameObject.h"
+#include <Renderer.h>
+#include <GameObject.h>
 #include "TransformComponent.h"
+#include <EventManager.h>
+#include <glm/ext/vector_float3.hpp>
 
-dae::LevelComponent::LevelComponent(GameObject* ownerObject)
+dae::LevelComponent::LevelComponent(GameObject* ownerObject, float tileSide, float zoomLevel)
 	: Component(ownerObject)
 	, m_Level()
 	, m_BasePosition()
+	, m_TileSide(tileSide)
+	, m_ZoomLevel(zoomLevel)
 {
 	CreateLevel();
+	m_TargetNumber = ownerObject->GetObjectID();
+
 	auto transformCpnt = GetOwner()->GetComponent<dae::TransformComponent>();
 	if (transformCpnt != nullptr)
 	{
 		m_BasePosition = transformCpnt->GetPosition().GetPosition();
 	}
+	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::IsTileValid);
 }
 
 dae::SourceRectangle dae::LevelComponent::GetSourceRect(int column, int row) const
@@ -22,16 +29,15 @@ dae::SourceRectangle dae::LevelComponent::GetSourceRect(int column, int row) con
 	assert(m_Level[column].size() - 1 >= row);
 
 	int tileID{ m_Level[column][row] };
-	float const tileSize{ 32.0f };
 	int const nrOfTilesVertical{ 3 };
 	int const nrOfTilesHorizontal{ 6 };
 
 	dae::SourceRectangle result{};
 
-	result.BaseWidth = nrOfTilesHorizontal * tileSize;
-	result.BaseHeight = nrOfTilesVertical * tileSize;
-	result.SrcWidth = tileSize;
-	result.SrcHeight = tileSize;
+	result.BaseWidth = nrOfTilesHorizontal * m_TileSide;
+	result.BaseHeight = nrOfTilesVertical * m_TileSide;
+	result.SrcWidth = m_TileSide;
+	result.SrcHeight = m_TileSide;
 	result.SrcPosY = static_cast<float>(tileID % nrOfTilesVertical) * result.SrcHeight;
 	result.SrcPosX = static_cast<float>(tileID / nrOfTilesVertical) * result.SrcWidth;
 
@@ -64,7 +70,7 @@ void dae::LevelComponent::Render() const
 	if (textureCpnt == nullptr) return;
 	if (transformCpnt == nullptr) return;
 
-	float const tileSize{ 32.0f * textureCpnt->GetRenderScale() };
+	float const tileSize{ m_TileSide * textureCpnt->GetRenderScale() };
 
 
 	for (int column = 0; column < m_Level.size(); column++)
@@ -81,9 +87,37 @@ void dae::LevelComponent::Render() const
 
 bool dae::LevelComponent::DoesTileExist(int column, int row)
 {
-	if (m_Level.size() < column or column < 0) return false;
+	if (m_Level.size() <= column or column < 0) return false;
 
-	if (m_Level[column].size() < row or row < 0) return false;
+	if (m_Level[column].size() <= row or row < 0) return false;
 
 	return true;
+}
+
+void dae::LevelComponent::Notify(const Event& event)
+{
+	switch (event.m_type)
+	{
+	case EventType::IsTileValid:
+		auto arguments{ event.GetArgumentsAsTuple<dae::TileCoordinates, dae::TileCoordinates>() };
+		auto pos	{ std::get<0>(arguments) };
+		auto direction{ std::get<1>(arguments) };
+
+		std::tuple<bool, glm::vec3> newEventArguments{ DoesTileExist(pos.m_Column + direction.m_Column, pos.m_Row + direction.m_Row), ConvertToWorld(direction.m_Column, direction.m_Row) };
+
+		Event eventToNotify{ dae::EventType::ConfirmMovement, newEventArguments, -1 };
+
+		dae::EventManager::GetInstance().PushEvent(eventToNotify);
+
+
+		break;
+	}
+}
+
+glm::vec3 dae::LevelComponent::ConvertToWorld(int columnOffset, int rowOffset)
+{
+	glm::vec3 result{ static_cast<float>(columnOffset), static_cast<float>(rowOffset), 0 };
+	result = glm::vec3(((result.x * 0.50f) - (result.y * 0.50f)), ((result.x * 0.75f) + (result.y * 0.75f)), 0);
+	result *= m_TileSide * m_ZoomLevel;
+	return result;
 }

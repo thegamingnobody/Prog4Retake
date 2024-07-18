@@ -25,6 +25,10 @@ namespace dae
 		void Move(const glm::vec3& newPos);
 		void Move(const Transform& newPos);
 
+		void MoveTo(float x, float y);
+		void MoveTo(const glm::vec3& newPos);
+		void MoveTo(const Transform& newPos);
+
 		void Notify(const Event& event) override;
 
 	private:

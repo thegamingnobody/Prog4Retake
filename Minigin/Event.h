@@ -10,10 +10,15 @@ namespace dae
 	enum class EventType
 	{
 		MoveObject,
+		TransformChanged,
+		RequestMovement,
+		IsTileValid,
+		ConfirmMovement,
+		MoveObjectTo,
+
 		PlaySound,
 		StopSound,
 		StopAllSounds,
-		TransformChanged
 	};
 
 	struct Event

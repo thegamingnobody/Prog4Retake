@@ -10,6 +10,7 @@ dae::TransformComponent::TransformComponent(dae::GameObject* object, float const
 {
 	m_TargetNumber = object->GetObjectID();
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::MoveObject);
+	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::MoveObjectTo);
 }
 
 const dae::Transform& dae::TransformComponent::GetPosition()
@@ -63,14 +64,35 @@ void dae::TransformComponent::Move(const Transform& newPos)
 	Move(newPos.GetPosition().x, newPos.GetPosition().y);
 }
 
+void dae::TransformComponent::MoveTo(float x, float y)
+{
+	Move(x - m_WorldPosition.GetPosition().x, y - m_WorldPosition.GetPosition().y);
+}
+
+void dae::TransformComponent::MoveTo(const glm::vec3& newPos)
+{
+	MoveTo(newPos.x, newPos.y);
+}
+
+void dae::TransformComponent::MoveTo(const Transform& newPos)
+{
+	MoveTo(newPos.GetPosition().x, newPos.GetPosition().y);
+}
+
 void dae::TransformComponent::Notify(const Event& event)
 {
 	switch (event.m_type)
 	{
 	case dae::EventType::MoveObject:
 	{
-		auto castedArguments{ std::get<0>(event.GetArgumentsAsTuple<const glm::vec3&>()) };
-		Move(castedArguments.x, castedArguments.y);
+		auto castedArguments{ std::get<0>(event.GetArgumentsAsTuple<glm::vec3>()) };
+		Move(castedArguments);
+	}
+	break;
+	case dae::EventType::MoveObjectTo:
+	{
+		auto castedArguments{ std::get<0>(event.GetArgumentsAsTuple<glm::vec3>()) };
+		MoveTo(castedArguments);
 	}
 	break;
 	}
