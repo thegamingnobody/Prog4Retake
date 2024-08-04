@@ -19,6 +19,8 @@ namespace dae
 
 		ToggleTile,
 
+		PlayerDied,
+
 		PlaySound,
 		StopSound,
 		StopAllSounds,

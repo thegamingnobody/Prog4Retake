@@ -11,15 +11,18 @@ void dae::TextureComponent::Render() const
 {
 	if (m_Texture != nullptr)
 	{
-		auto transformComp{ GetOwner()->GetComponent<dae::TransformComponent>() };
-		if (transformComp)
+		if (m_Render == true)
 		{
-			auto& pos{ transformComp->GetPosition().GetPosition() };
-			Renderer::GetInstance().RenderTexture(*m_Texture, pos.x, pos.y, 0, 0, m_SrcRect, m_RenderScale);
-		}
-		else
-		{
-			Renderer::GetInstance().RenderTexture(*m_Texture, 0.0f, 0.0f);
+			auto transformComp{ GetOwner()->GetComponent<dae::TransformComponent>() };
+			if (transformComp)
+			{
+				auto& pos{ transformComp->GetPosition().GetPosition() };
+				Renderer::GetInstance().RenderTexture(*m_Texture, pos.x, pos.y, 0, 0, m_SrcRect, m_RenderScale);
+			}
+			else
+			{
+				Renderer::GetInstance().RenderTexture(*m_Texture, 0.0f, 0.0f);
+			}
 		}
 	}
 }
@@ -73,6 +76,7 @@ dae::TextureComponent::TextureComponent(GameObject* object, const std::string& f
 	, m_Texture()
 	, m_SrcRect()
 	, m_RenderScale(1)
+	, m_Render(true)
 {
 	SetTexture(filename);
 
@@ -86,6 +90,7 @@ dae::TextureComponent::TextureComponent(dae::GameObject* object, const std::stri
 	, m_Texture()
 	, m_SrcRect()
 	, m_RenderScale(renderScale)
+	, m_Render(true)
 {
 	SetTexture(filename);
 

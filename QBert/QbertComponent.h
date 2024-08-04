@@ -12,10 +12,11 @@ namespace dae
         {
             Idle,
             Requesting,
-            Moving
+            Moving,
+            Dead
         };
 
-        QbertComponent(GameObject* object, int startColumn = 0, int startRow = 0);
+        QbertComponent(GameObject* object, GameObject* curseObject, int startColumn = 0, int startRow = 0);
 
         void Update(float const deltaTime) override;
 
@@ -34,5 +35,7 @@ namespace dae
         TileCoordinates m_TilesDirection;
         bool m_DirectionSet;
         MovementState m_MovementState;
+
+        GameObject* m_CurseObject;
     };
 }

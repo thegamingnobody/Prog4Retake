@@ -12,6 +12,7 @@
 
 #include <Scene.h>
 #include "QbertComponent.h"
+#include "CurseComponent.h"
 
 void load()
 {
@@ -38,19 +39,21 @@ void load()
 #pragma region level
 	const float tileSize{ 32.0f };
 	const float globalZoom{ 2.0f };
+	{
+		go = std::make_shared<dae::GameObject>("Level");
 
-	go = std::make_shared<dae::GameObject>("Level");
+		dae::SourceRectangle sourceRect = dae::SourceRectangle(192.0f, 96.0f, tileSize, tileSize, 0.0f, 0.0f);
 
-	dae::SourceRectangle sourceRect = dae::SourceRectangle(192.0f, 96.0f, tileSize, tileSize, 0.0f, 0.0f);
+		auto& textureComponent = go->AddComponent<dae::TextureComponent>("Tiles.png", sourceRect, globalZoom);
+		auto textureDimentions = textureComponent.GetSize();
 
-	auto textureDimentions = go->AddComponent<dae::TextureComponent>("Tiles.png", sourceRect, globalZoom).GetSize();
-
-	go->AddComponent<dae::TransformComponent>(static_cast<float>(dae::Minigin::m_WindowWidth * 0.50f) - (tileSize * 0.50f),
-		static_cast<float>(dae::Minigin::m_WindowHeight * 0.25f) - (tileSize * 0.50f));
+		go->AddComponent<dae::TransformComponent>(	static_cast<float>(dae::Minigin::m_WindowWidth  * 0.50f) - (tileSize * 0.50f),
+													static_cast<float>(dae::Minigin::m_WindowHeight * 0.25f) - (tileSize * 0.50f));
 	
-	go->AddComponent<dae::LevelComponent>(tileSize, globalZoom);
+		go->AddComponent<dae::LevelComponent>(tileSize, globalZoom);
 
-	scene.Add(go);
+		scene.Add(go);
+	}
 
 #pragma endregion
 
@@ -72,15 +75,36 @@ void load()
 #pragma endregion
 
 #pragma region player
-
-	go = std::make_shared<dae::GameObject>("Player", -1);
-	sourceRect = dae::SourceRectangle(68.0f, 16.0f, 17.0f, 16.0f, 51.0f, 0.0f);
-	textureDimentions = go->AddComponent<dae::TextureComponent>("Qbert1.png", sourceRect, globalZoom).GetSize();
-	go->AddComponent<dae::TransformComponent>(static_cast<float>(dae::Minigin::m_WindowWidth * 0.50f) - (textureDimentions.x * 0.00f),
-		static_cast<float>(dae::Minigin::m_WindowHeight * 0.25f) - (textureDimentions.y * 1.50f));
-	go->AddComponent<dae::QbertComponent>();
 	
-	scene.Add(go);
+		auto curseGo = std::make_shared<dae::GameObject>("PlayerCurse", 5);
+	{
+		dae::SourceRectangle sourceRect = dae::SourceRectangle(48.0f, 25.0f, 48.0f, 25.0f, 0.0f, 0.0f);
+
+		auto& textureComponent = curseGo->AddComponent<dae::TextureComponent>("Curse.png", sourceRect, globalZoom * 0.50f);
+		textureComponent.ToggleRender();
+		auto textureDimentions = textureComponent.GetSize();
+		curseGo->AddComponent<dae::TransformComponent>(	static_cast<float>(dae::Minigin::m_WindowWidth  * 0.50f) - (textureDimentions.x * 0.00f),
+														static_cast<float>(dae::Minigin::m_WindowHeight * 0.25f) - (textureDimentions.y * 2.00f));
+		curseGo->AddComponent<dae::CurseComponent>();
+		scene.Add(curseGo);
+	}
+	
+
+	{
+		go = std::make_shared<dae::GameObject>("Player", -1);
+		dae::SourceRectangle sourceRect = dae::SourceRectangle(68.0f, 16.0f, 17.0f, 16.0f, 51.0f, 0.0f);
+
+		auto& textureComponent = go->AddComponent<dae::TextureComponent>("Qbert1.png", sourceRect, globalZoom);
+		auto textureDimentions = textureComponent.GetSize();
+
+		go->AddComponent<dae::TransformComponent>(	static_cast<float>(dae::Minigin::m_WindowWidth  * 0.50f) - (textureDimentions.x * 0.00f),
+													static_cast<float>(dae::Minigin::m_WindowHeight * 0.25f) - (textureDimentions.y * 1.50f));
+		
+		go->AddComponent<dae::QbertComponent>(curseGo.get());
+
+		scene.Add(go);
+	}
+
 #pragma endregion
 
 }

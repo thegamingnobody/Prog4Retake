@@ -54,6 +54,9 @@ namespace dae
 
 		glm::ivec2 GetSize() const { return m_Texture->GetSize(); }
 
+		void ToggleRender() { m_Render = not(m_Render); }
+		void ToggleRender(bool render) { m_Render = render; }
+
 		TextureComponent(GameObject* object, const std::string& filename);
 		TextureComponent(GameObject* object, const std::string& filename, const SourceRectangle& sourceRect, float renderScale = 1);
 		virtual ~TextureComponent() override = default;
@@ -66,6 +69,8 @@ namespace dae
 		std::shared_ptr<Texture2D> m_Texture;
 		SourceRectangle m_SrcRect;
 		float m_RenderScale;
+
+		bool m_Render;
 	};
 }
 

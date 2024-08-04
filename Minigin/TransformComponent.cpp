@@ -20,7 +20,7 @@ void dae::TransformComponent::Update(float const deltaTime)
 {
 	if (m_IsMoving)
 	{
-		float const slideTime{ 0.35f };
+		float const slideTime{ 0.4f };
 
 		m_AccumulatedTime += deltaTime;
 
