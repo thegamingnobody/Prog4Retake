@@ -113,11 +113,12 @@ void dae::TransformComponent::Notify(const Event& event)
 
 		if (not(shouldSlide))
 		{
+			m_AccumulatedTime = 10000.0f;
+			m_IsMoving = true;
 			Move(newDir);
 		}
 		else
 		{
-	
 			m_Direction = newDir;
 			m_AccumulatedTime = 0.0f;
 			m_IsMoving = true;

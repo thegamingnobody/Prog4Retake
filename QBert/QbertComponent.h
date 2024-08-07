@@ -9,14 +9,6 @@ namespace dae
     class QbertComponent : public Component, public Observer
     {
     public:
-        enum class MovementState
-        {
-            Idle,
-            Requesting,
-            Moving,
-            Dead
-        };
-
         QbertComponent(GameObject* object, GameObject* curseObject, int startColumn = 0, int startRow = 0);
 
         void Update(float const deltaTime) override;
@@ -34,7 +26,6 @@ namespace dae
         TileCoordinates GetCoords() const { return m_Coordinates; }
 
     private:
-        //MovementState m_MovementState;
         TileCoordinates m_Coordinates;
 
         GameObject* m_CurseObject;

@@ -58,7 +58,7 @@
       <Filter>Source Files\States</Filter>
     </ClCompile>
     <ClCompile Include="CurseComponent.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -90,7 +90,7 @@
       <Filter>Header Files\States</Filter>
     </ClInclude>
     <ClInclude Include="CurseComponent.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

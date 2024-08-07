@@ -9,6 +9,7 @@ dae::CurseComponent::CurseComponent(GameObject* object)
 {
 	m_TargetNumber = object->GetObjectID();
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::PlayerDied);
+	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::RespawnPlayer);
 
 }
 
@@ -33,13 +34,15 @@ void dae::CurseComponent::Notify(const Event& event)
 
 		owner->GetComponent<dae::TextureComponent>()->ToggleRender();
 
-		std::tuple<> eventArguments{};
-
-		Event eventToNotify{ dae::EventType::RespawnPlayer, eventArguments, -1 };
-
-		dae::EventManager::GetInstance().PushEvent(eventToNotify);
-
 		break;
 	}
+	case dae::EventType::RespawnPlayer:
+		{
+			auto owner{ GetOwner() };
+			if (not owner) break;
+
+			owner->GetComponent<dae::TextureComponent>()->ToggleRender();
+		}
+		break;
 	}
 }

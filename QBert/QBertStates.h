@@ -10,7 +10,7 @@ namespace dae
 	class JumpingState : public State
 	{
 	public:
-		JumpingState(GameObject* object, const glm::vec3& direction, float jumpTime);
+		JumpingState(GameObject* object, const glm::vec3& direction, float jumpTime, bool isTileValid);
 
 		void OnEnter() override;
 		void Update(float const deltaTime) override;
@@ -20,6 +20,7 @@ namespace dae
 		float const m_MaxJumpTime;
 		float m_AccumulatedTime;
 		glm::vec3 m_Direction;
+		bool m_IsTileValid;
 	};
 
 	class RequestingMovementState : public State, public Observer
@@ -56,7 +57,20 @@ namespace dae
 		void OnExit() override;
 
 		void Notify(const Event& event) override;
+	};
 
+	class DeathState : public State
+	{
+	public:
+		DeathState(GameObject* object, float deathTimer);
+
+		void OnEnter() override;
+		void Update(float const deltaTime) override;
+		void OnExit() override;
+
+	private:
+		float m_DeathTimer;
+		float m_AccumulatedTime;
 	};
 
 

@@ -4,22 +4,20 @@
 #include <TransformComponent.h>
 #include <EventManager.h>
 
-dae::JumpingState::JumpingState(GameObject* object, const glm::vec3& direction, float jumpTime)
+dae::JumpingState::JumpingState(GameObject* object, const glm::vec3& direction, float jumpTime, bool isTileValid)
 	: State(object)
 	, m_MaxJumpTime(jumpTime)
 	, m_AccumulatedTime(0.0f)
 	, m_Direction(direction)
+	, m_IsTileValid(isTileValid)
 {
 }
 
 void dae::JumpingState::OnEnter()
 {
-	std::cout << "Enter Jump\n";
 }
 void dae::JumpingState::Update(float const deltaTime)
-{
-	std::cout << "Jumping\n";
-	
+{	
 	m_AccumulatedTime += deltaTime;
 
 	std::tuple<glm::vec3, bool> eventArguments{ (m_Direction / m_MaxJumpTime) * deltaTime, false };
@@ -30,7 +28,7 @@ void dae::JumpingState::Update(float const deltaTime)
 
 	if (m_AccumulatedTime >= m_MaxJumpTime)
 	{
-		std::tuple<dae::TileCoordinates> eventArguments2{ dae::TileCoordinates(static_cast<int>(m_Direction.x), static_cast<int>(m_Direction.y)) };
+		std::tuple<dae::TileCoordinates, bool> eventArguments2{ dae::TileCoordinates(static_cast<int>(m_Direction.x), static_cast<int>(m_Direction.y)), m_IsTileValid };
 		Event eventToNotify2{ dae::EventType::MoveFinished, eventArguments2, -1 };
 		dae::EventManager::GetInstance().PushEvent(eventToNotify2);
 		GetObject()->GetComponent<dae::QbertComponent>()->SetState(std::make_unique<FinishMovementState>(GetObject()));
@@ -38,7 +36,6 @@ void dae::JumpingState::Update(float const deltaTime)
 }
 void dae::JumpingState::OnExit()
 {
-	std::cout << "Exit Jump\n";
 }
 
 dae::IdleState::IdleState(GameObject* object)
@@ -48,17 +45,13 @@ dae::IdleState::IdleState(GameObject* object)
 
 void dae::IdleState::OnEnter()
 {
-	std::cout << "Enter Idle\n";
-
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::RequestMovement);
 }
 void dae::IdleState::Update(float const)
 {
-	std::cout << "Idle\n";
 }
 void dae::IdleState::OnExit()
 {
-	std::cout << "Exit Idle\n";
 	dae::EventManager::GetInstance().RemoveObserver(this);
 }
 
@@ -94,16 +87,13 @@ dae::RequestingMovementState::RequestingMovementState(GameObject* object)
 
 void dae::RequestingMovementState::OnEnter()
 {
-	std::cout << "Enter Request\n";
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::ConfirmMovement);
 }
 void dae::RequestingMovementState::Update(float const /*deltaTime*/)
 {
-	std::cout << "Request\n";
 }
 void dae::RequestingMovementState::OnExit()
 {
-	std::cout << "Exit Request\n";
 	dae::EventManager::GetInstance().RemoveObserver(this);
 }
 
@@ -114,13 +104,14 @@ void dae::RequestingMovementState::Notify(const Event& event)
 	case dae::EventType::ConfirmMovement:
 		{
 			auto arguments{ event.GetArgumentsAsTuple<bool, glm::vec3, dae::TileCoordinates>() };
-			//bool isTileValid{ std::get<0>(arguments) };
+			bool isTileValid{ std::get<0>(arguments) };
 			auto& newDirection{ std::get<1>(arguments) };
 			//auto& originalDirection{ std::get<2>(arguments) };
 
 			float maxJumpTime{ 0.4f };
 
-			GetObject()->GetComponent<dae::QbertComponent>()->SetState(std::make_unique<JumpingState>(GetObject(), newDirection, maxJumpTime));
+			GetObject()->GetComponent<dae::QbertComponent>()->SetState(std::make_unique<JumpingState>(GetObject(), newDirection, maxJumpTime, isTileValid));
+
 		}
 		break;
 	}
@@ -133,16 +124,13 @@ dae::FinishMovementState::FinishMovementState(GameObject* object)
 
 void dae::FinishMovementState::OnEnter()
 {
-	std::cout << "Enter Finish\n";
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::MoveFinished);
 }
 void dae::FinishMovementState::Update(float const /*deltaTime*/)
 {
-	std::cout << "Finish\n";
 }
 void dae::FinishMovementState::OnExit()
 {
-	std::cout << "Exit Finish\n";
 	dae::EventManager::GetInstance().RemoveObserver(this);
 }
 
@@ -152,16 +140,61 @@ void dae::FinishMovementState::Notify(const Event& event)
 	{
 	case dae::EventType::MoveFinished:
 		{
-		auto coords = GetObject()->GetComponent<dae::QbertComponent>()->GetCoords();
+			auto coords = GetObject()->GetComponent<dae::QbertComponent>()->GetCoords();
 
-		std::tuple<TileCoordinates, TileCoordinates> eventArguments{ coords, std::get<0>(event.GetArgumentsAsTuple<dae::TileCoordinates>()) };
+			auto arguments = event.GetArgumentsAsTuple<dae::TileCoordinates, bool>();
 
-		Event eventToNotify{ dae::EventType::ToggleTile, eventArguments, -1 };
+			if (std::get<1>(arguments))
+			{
+				std::tuple<TileCoordinates, TileCoordinates> eventArguments{ coords, std::get<0>(arguments) };
+				Event eventToNotify{ dae::EventType::ToggleTile, eventArguments, -1 };
+				dae::EventManager::GetInstance().PushEvent(eventToNotify);
+				GetObject()->GetComponent<dae::QbertComponent>()->SetState(std::make_unique<IdleState>(GetObject()));
+				break;
+			}
+			else
+			{
+				auto transformCpnt = GetObject()->GetComponent<dae::TransformComponent>();
+				if (transformCpnt)
+				{
+					std::tuple<dae::Transform> eventArguments{ transformCpnt->GetPosition() };
+
+					Event eventToNotify{ dae::EventType::PlayerDied, eventArguments, -1 };
+
+					dae::EventManager::GetInstance().PushEvent(eventToNotify);
+					GetObject()->GetComponent<dae::QbertComponent>()->SetState(std::make_unique<DeathState>(GetObject(), 1.0f));
+					break;
+				}
+			}
+		}
+		break;
+	}
+}
+
+dae::DeathState::DeathState(GameObject* object, float deathTimer)
+	: State(object)
+	, m_DeathTimer(deathTimer)
+	, m_AccumulatedTime(0.0f)
+{
+
+}
+
+void dae::DeathState::OnEnter()
+{
+}
+void dae::DeathState::Update(float const deltaTime)
+{
+	m_AccumulatedTime += deltaTime;
+
+	if (m_AccumulatedTime >= m_DeathTimer)
+	{
+		Event eventToNotify{ dae::EventType::RespawnPlayer, std::tuple<>(), -1};
 
 		dae::EventManager::GetInstance().PushEvent(eventToNotify);
 
 		GetObject()->GetComponent<dae::QbertComponent>()->SetState(std::make_unique<IdleState>(GetObject()));
-		}
-		break;
 	}
+}
+void dae::DeathState::OnExit()
+{
 }

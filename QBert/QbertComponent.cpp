@@ -7,9 +7,6 @@
 dae::QbertComponent::QbertComponent(GameObject* object, GameObject* curseObject, int startColumn, int startRow)
 	: Component(object)
 	, m_Coordinates(startColumn, startRow)
-	//, m_TilesDirection(startColumn, startRow)
-	//, m_DirectionSet(false)
-	//, m_MovementState(dae::QbertComponent::MovementState::Idle)
 	, m_CurseObject(curseObject)
 {
 	m_TargetNumber = object->GetObjectID();
@@ -18,11 +15,6 @@ dae::QbertComponent::QbertComponent(GameObject* object, GameObject* curseObject,
 
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::ConfirmMovement);
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::RespawnPlayer);
-
-	//std::tuple<const glm::vec3&> eventArguments{ glm::vec3(0.0f, 0.0f, 0.0f) };
-	//Event eventToNotify{ dae::EventType::RequestMovement, eventArguments, m_TargetNumber };
-	//dae::EventManager::GetInstance().PushEvent(eventToNotify);
-
 }
 
 void dae::QbertComponent::Update(float const deltaTime)
@@ -34,55 +26,40 @@ void dae::QbertComponent::Notify(const Event& event)
 {
 	switch (event.m_type)
 	{
-	//case dae::EventType::RequestMovement:
-		//if (decltype(m_PlayerState) == decltype(dae::IdleState))
-		//{
-		//	SetState(std::make_unique<dae::JumpingState>(GetOwner()));
-		//}
-
-	//	break;
 	case dae::EventType::ConfirmMovement:
-		{
-			auto arguments{ event.GetArgumentsAsTuple<bool, glm::vec3, dae::TileCoordinates>() };
-			auto& originalDirection{ std::get<2>(arguments) };
-			bool isTileValid{ std::get<0>(arguments) };
+	{
+		auto arguments{ event.GetArgumentsAsTuple<bool, glm::vec3, dae::TileCoordinates>() };
+		auto& originalDirection{ std::get<2>(arguments) };
+		//bool isTileValid{ std::get<0>(arguments) };
 
-			if (isTileValid)
-			{
-				m_Coordinates.m_Row += originalDirection.m_Row;
-				m_Coordinates.m_Column += originalDirection.m_Column;
-			}
+		m_Coordinates.m_Row += originalDirection.m_Row;
+		m_Coordinates.m_Column += originalDirection.m_Column;
 
-			//if (not(isTileValid))
-			//{
-			//	m_MovementState = MovementState::Dead;				 
-			//}
-			break;
-		}
-	case dae::EventType::MoveFinished:
-		{
-			//std::tuple<TileCoordinates, TileCoordinates> eventArguments{ m_Coordinates, m_TilesDirection };
+		break;
+	}
+	case dae::EventType::RespawnPlayer:
 
-			//Event eventToNotify{ dae::EventType::ToggleTile, eventArguments, -1 };
+		glm::vec3 coords{ static_cast<int>(m_Coordinates.m_Row), static_cast<int>(m_Coordinates.m_Column), 0.0f };
 
-			//dae::EventManager::GetInstance().PushEvent(eventToNotify);
+		coords.x = -(coords.y);
+		coords.y = -(coords.x);
 
-			//if (not(m_MovementState == MovementState::Dead))
-			//{
-			//	m_MovementState = MovementState::Idle;
-			//	SetState(std::make_unique<dae::IdleState>(GetOwner()));
-			//}
-			//else
-			//{
-			//	if (not m_CurseObject) return;
+		//bad magic numbers and copied code from level component
+		coords = glm::vec3(((coords.x * 0.50f) - (coords.y * 0.50f)), ((coords.x * 0.75f) + (coords.y * 0.75f)), 0);
+		coords *= 32.0f * 2.0f;
 
-			//	auto playerpos{ GetOwner()->GetComponent<dae::TransformComponent>() };
 
-			//	Event newEventToNotify = Event(dae::EventType::PlayerDied, std::tuple<dae::Transform>(playerpos->GetPosition()), m_CurseObject->GetObjectID());
-			//	dae::EventManager::GetInstance().PushEvent(newEventToNotify);
-			//}
-			//break;
-		}
+		std::tuple<glm::vec3, bool> eventArguments{ coords, false };
+
+		Event eventToNotify{ dae::EventType::MoveObject, eventArguments, -1 };
+		auto owner{ GetOwner() };
+		owner->NotifyComponents(eventToNotify);
+
+		m_Coordinates.m_Row = 0;
+		m_Coordinates.m_Column = 0;
+
+
+		break;
 	}
 }
 
