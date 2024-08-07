@@ -32,6 +32,13 @@ void dae::CurseComponent::Notify(const Event& event)
 		transformComponent->MoveTo(pos);
 
 		owner->GetComponent<dae::TextureComponent>()->ToggleRender();
+
+		std::tuple<> eventArguments{};
+
+		Event eventToNotify{ dae::EventType::RespawnPlayer, eventArguments, -1 };
+
+		dae::EventManager::GetInstance().PushEvent(eventToNotify);
+
 		break;
 	}
 	}

@@ -1,6 +1,7 @@
 #include "TransformComponent.h"
 #include "GameObject.h"
 #include "EventManager.h"
+#include "Level.h"
 
 dae::TransformComponent::TransformComponent(dae::GameObject* object, float const x, float const y)
 	: Component(object)
@@ -9,7 +10,7 @@ dae::TransformComponent::TransformComponent(dae::GameObject* object, float const
 	, m_WorldPosition(Transform(x, y, 0))
 	, m_Direction(Transform(0, 0, 0))
 	, m_AccumulatedTime(0.0f)
-
+	, m_IsMoving()
 {
 	m_TargetNumber = object->GetObjectID();
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::MoveObject);
@@ -30,9 +31,10 @@ void dae::TransformComponent::Update(float const deltaTime)
 		}
 		else
 		{
-			Event eventToNotify{ dae::EventType::MoveFinished, std::tuple<>(), m_TargetNumber };
+			auto arguments = std::make_tuple<dae::TileCoordinates>(dae::TileCoordinates(static_cast<int>(m_Direction.GetPosition().y), static_cast<int>(m_Direction.GetPosition().x)));
 
-			std::cout << "moveFinished\n";
+			Event eventToNotify{ dae::EventType::MoveFinished, arguments, m_TargetNumber };
+
 			GetOwner()->NotifyComponents(eventToNotify);
 		
 			m_IsMoving = false;

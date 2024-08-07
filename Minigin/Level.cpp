@@ -105,7 +105,7 @@ void dae::LevelComponent::Notify(const Event& event)
 			auto pos	{ std::get<0>(arguments) };
 			auto direction{ std::get<1>(arguments) };
 
-			std::tuple<bool, glm::vec3> newEventArguments{ DoesTileExist(pos.m_Column + direction.m_Column, pos.m_Row + direction.m_Row), ConvertToWorld(direction.m_Column, direction.m_Row) };
+			std::tuple<bool, glm::vec3, dae::TileCoordinates> newEventArguments{ DoesTileExist(pos.m_Column + direction.m_Column, pos.m_Row + direction.m_Row), ConvertToWorld(direction.m_Column, direction.m_Row), direction };
 
 			Event eventToNotify{ dae::EventType::ConfirmMovement, newEventArguments, -1 };
 

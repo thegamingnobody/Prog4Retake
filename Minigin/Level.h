@@ -5,7 +5,7 @@
 #include "Transform.h"
 #include <vector>
 #include "TextureComponent.h"
-#include <Observer.h>
+#include "Observer.h"
 
 namespace dae
 {

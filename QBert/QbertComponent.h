@@ -2,6 +2,7 @@
 #include <Component.h>
 #include <Observer.h>
 #include "Level.h"
+#include "QBertStates.h"
 
 namespace dae
 {
@@ -28,14 +29,16 @@ namespace dae
 
         void Notify(const Event& event) override;
 
-        
+        void SetState(std::unique_ptr<State>&& newState, bool callOnExit = true);
+
+        TileCoordinates GetCoords() const { return m_Coordinates; }
 
     private:
+        //MovementState m_MovementState;
         TileCoordinates m_Coordinates;
-        TileCoordinates m_TilesDirection;
-        bool m_DirectionSet;
-        MovementState m_MovementState;
 
         GameObject* m_CurseObject;
+
+        std::unique_ptr<State> m_PlayerState;
     };
 }

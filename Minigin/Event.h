@@ -21,6 +21,8 @@ namespace dae
 
 		PlayerDied,
 
+		RespawnPlayer,
+
 		PlaySound,
 		StopSound,
 		StopAllSounds,

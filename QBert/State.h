@@ -10,10 +10,10 @@ namespace dae
 	public:
 		
 		virtual ~State() = default;
-		State(const State& other) = delete;
-		State(State&& other) = delete;
-		State& operator=(const State& other) = delete;
-		State& operator=(State&& other) = delete;
+		State(const State& other) = default;
+		State(State&& other) = default;
+		State& operator=(const State& other) = default;
+		State& operator=(State&& other) = default;
 
 
 		virtual void OnEnter() {}
@@ -30,4 +30,4 @@ namespace dae
 	};
 }
 
-#endif
+#endif 
