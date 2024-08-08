@@ -1,3 +1,5 @@
+#include <SDL.h>
+
 #if _DEBUG
 #if __has_include(<vld.h>)
 //#include <vld.h>
@@ -14,8 +16,22 @@
 #include "QbertComponent.h"
 #include "CurseComponent.h"
 
+#include <ServiceLocator.h>
+#include <soundSystem.h>
+#include <DAE_SDL_SoundSystem.h>
+
 void load()
 {
+	dae::ServiceLocator::RegisterSoundSystem(std::make_unique<dae::DAE_SDL_SoundSystem>());
+
+	std::vector<std::string> m_SoundfilePaths{ "../Data/Sounds/QBert Jump.wav" };
+
+	for (int soundIndex = 0; soundIndex < m_SoundfilePaths.size(); soundIndex++)
+	{
+		dae::ServiceLocator::GetSoundSystem().AddSound(m_SoundfilePaths[soundIndex]);
+	}
+	
+
 	auto& scene = dae::SceneManager::GetInstance().CreateScene("Demo");
 	auto& inputManager = dae::InputManager::GetInstance();
 

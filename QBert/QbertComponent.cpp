@@ -3,6 +3,8 @@
 #include <EventManager.h>
 #include <glm/ext/vector_float3.hpp>
 #include <TransformComponent.h>
+#include <ServiceLocator.h>
+#include <DAE_SDL_SoundSystem.h>
 
 dae::QbertComponent::QbertComponent(GameObject* object, GameObject* curseObject, int startColumn, int startRow)
 	: Component(object)

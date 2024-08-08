@@ -37,11 +37,20 @@
     <Filter Include="Source Files\Input">
       <UniqueIdentifier>{1139ad43-ea60-43af-8038-fbc1d934c5fe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Managers\ServiceLocator">
+      <UniqueIdentifier>{780151ca-2043-438c-9653-16c3e815e63b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Managers\ServiceLocator\Sound">
+      <UniqueIdentifier>{26bac848-0260-4346-ba9a-21823c5c2e80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Managers\ServiceLocator">
+      <UniqueIdentifier>{b6018c66-50e4-4a3b-a947-c6a9178cf5b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Managers\ServiceLocator\Sound">
+      <UniqueIdentifier>{12e23d7b-ddc3-4c81-bdfc-dd9ae0388261}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GameObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Minigin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -96,12 +105,6 @@
     <ClInclude Include="ButtonEnums.h">
       <Filter>Header Files\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Observer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Subject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Action.h">
       <Filter>Header Files\Input</Filter>
     </ClInclude>
@@ -111,11 +114,29 @@
     <ClInclude Include="Event.h">
       <Filter>Header Files\Other</Filter>
     </ClInclude>
+    <ClInclude Include="ServiceLocator.h">
+      <Filter>Header Files\Managers\ServiceLocator</Filter>
+    </ClInclude>
+    <ClInclude Include="soundSystem.h">
+      <Filter>Header Files\Managers\ServiceLocator\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="NullSoundSystem.h">
+      <Filter>Header Files\Managers\ServiceLocator\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="DAE_SDL_SoundSystem.h">
+      <Filter>Header Files\Managers\ServiceLocator\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Header Files\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Observer.h">
+      <Filter>Header Files\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Subject.h">
+      <Filter>Header Files\Other</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GameObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Minigin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -164,17 +185,32 @@
     <ClCompile Include="Controller.cpp">
       <Filter>Source Files\Input</Filter>
     </ClCompile>
-    <ClCompile Include="Observer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Subject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Action.cpp">
       <Filter>Source Files\Input</Filter>
     </ClCompile>
     <ClCompile Include="EventManager.cpp">
       <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="soundSystem.cpp">
+      <Filter>Source Files\Managers\ServiceLocator\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="NullSoundSystem.cpp">
+      <Filter>Source Files\Managers\ServiceLocator\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="DAE_SDL_SoundSystem.cpp">
+      <Filter>Source Files\Managers\ServiceLocator\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="ServiceLocator.cpp">
+      <Filter>Source Files\Managers\ServiceLocator</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Source Files\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Observer.cpp">
+      <Filter>Source Files\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Subject.cpp">
+      <Filter>Source Files\Other</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

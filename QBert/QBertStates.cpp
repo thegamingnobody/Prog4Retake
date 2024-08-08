@@ -3,6 +3,7 @@
 #include "QbertComponent.h"
 #include <TransformComponent.h>
 #include <EventManager.h>
+#include <ServiceLocator.h>
 
 dae::JumpingState::JumpingState(GameObject* object, const glm::vec3& direction, float jumpTime, bool isTileValid)
 	: State(object)
@@ -140,6 +141,9 @@ void dae::FinishMovementState::Notify(const Event& event)
 	{
 	case dae::EventType::MoveFinished:
 		{
+			//play jumping sound
+			dae::ServiceLocator::GetSoundSystem().PlaySound(0, 0.1f);
+			
 			auto coords = GetObject()->GetComponent<dae::QbertComponent>()->GetCoords();
 
 			auto arguments = event.GetArgumentsAsTuple<dae::TileCoordinates, bool>();

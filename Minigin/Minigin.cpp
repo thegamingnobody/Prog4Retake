@@ -12,6 +12,11 @@
 #include "ResourceManager.h"
 #include <chrono>
 #include <thread>
+#include "ServiceLocator.h"
+#include "soundSystem.h"
+#include "NullSoundSystem.h"
+
+std::unique_ptr<dae::SoundSystem> dae::ServiceLocator::m_SoundSystemInstance{ std::make_unique<dae::NullSoundSystem>() };
 
 SDL_Window* g_window{};
 
