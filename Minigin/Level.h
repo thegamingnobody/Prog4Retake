@@ -22,7 +22,7 @@ namespace dae
 	class LevelComponent final : public Component, public Observer
 	{
 	public:
-		LevelComponent(GameObject* ownerObject, float tileSide, float zoomLevel);
+		LevelComponent(GameObject* ownerObject, float tileSide, float zoomLevel, int tileSet, int maxToggles);
 
 		virtual ~LevelComponent() = default;
 		LevelComponent(const LevelComponent& other) = delete;
@@ -51,6 +51,8 @@ namespace dae
 		glm::vec3 m_BasePosition;
 		float const m_TileSide;
 		float const m_ZoomLevel;
+		int m_TileSet;
+		int const m_MaxTileToggles;
 
 	};
 }

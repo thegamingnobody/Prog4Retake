@@ -5,12 +5,14 @@
 #include <EventManager.h>
 #include <glm/ext/vector_float3.hpp>
 
-dae::LevelComponent::LevelComponent(GameObject* ownerObject, float tileSide, float zoomLevel)
+dae::LevelComponent::LevelComponent(GameObject* ownerObject, float tileSide, float zoomLevel, int tileSet, int maxToggles)
 	: Component(ownerObject)
 	, m_Level()
 	, m_BasePosition()
 	, m_TileSide(tileSide)
 	, m_ZoomLevel(zoomLevel)
+	, m_TileSet(tileSet)
+	, m_MaxTileToggles(maxToggles)
 {
 	CreateLevel();
 	m_TargetNumber = ownerObject->GetObjectID();
@@ -55,7 +57,7 @@ void dae::LevelComponent::CreateLevel()
 		std::vector<int> collumn;
 		for (int row = 0; row < (nrOfRows - column); row++)
 		{
-			collumn.emplace_back(0);
+			collumn.emplace_back(m_TileSet * 3);
 		}
 		m_Level.emplace_back(collumn);
 	}
@@ -138,6 +140,10 @@ void dae::LevelComponent::ToggleTile(int column, int row)
 {
 	if (DoesTileExist(column, row))
 	{
-		m_Level[row][column] = 1;
+		int currentTileId{ m_Level[row][column] };
+		if (currentTileId % 3 < m_MaxTileToggles)
+		{
+			m_Level[row][column] += 1;
+		}
 	}
 }

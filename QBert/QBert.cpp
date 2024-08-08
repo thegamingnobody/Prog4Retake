@@ -20,6 +20,9 @@
 #include <soundSystem.h>
 #include <DAE_SDL_SoundSystem.h>
 
+#include <fstream>
+#include <sstream>
+
 void load()
 {
 	dae::ServiceLocator::RegisterSoundSystem(std::make_unique<dae::DAE_SDL_SoundSystem>());
@@ -36,15 +39,6 @@ void load()
 	auto& inputManager = dae::InputManager::GetInstance();
 
 #pragma region standard
-	//auto go = std::make_shared<dae::GameObject>("Background Image");
-	//go->AddComponent<dae::TextureComponent>("background.tga");
-	//scene.Add(go);
-
-	//go = std::make_shared<dae::GameObject>("DAE Logo");
-	//go->AddComponent<dae::TextureComponent>("logo.tga");
-	//go->AddComponent<dae::TransformComponent>(216.0f, 180.0f);
-	//scene.Add(go);
-
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 	auto go = std::make_shared<dae::GameObject>("Prog4 assignment text");
 	go->AddComponent<dae::TextComponent>("Programming 4 Assignment", font);
@@ -58,7 +52,33 @@ void load()
 	{
 		go = std::make_shared<dae::GameObject>("Level");
 
-		dae::SourceRectangle sourceRect = dae::SourceRectangle(192.0f, 96.0f, tileSize, tileSize, 0.0f, 0.0f);
+		int tileset{};
+
+		std::ifstream levelFile{ "../Data/Level1.txt" };
+		if (!levelFile) 
+		{
+			std::cout << "cannot open or find file\n";
+			return;
+		}
+
+
+		std::string line;
+		while (std::getline(levelFile, line)) 
+		{
+			std::istringstream input{ line };
+			std::string tag;
+			while (input >> tag) 
+			{
+				if (tag == "Tileset") 
+				{
+					input >> tileset;
+				}
+	
+			}
+		}
+		levelFile.close();
+
+		dae::SourceRectangle sourceRect = dae::SourceRectangle(192.0f, 96.0f, tileSize, tileSize, tileSize * tileset, 0.0f);
 
 		auto& textureComponent = go->AddComponent<dae::TextureComponent>("Tiles.png", sourceRect, globalZoom);
 		auto textureDimentions = textureComponent.GetSize();
@@ -66,7 +86,7 @@ void load()
 		go->AddComponent<dae::TransformComponent>(	static_cast<float>(dae::Minigin::m_WindowWidth  * 0.50f) - (tileSize * 0.50f),
 													static_cast<float>(dae::Minigin::m_WindowHeight * 0.25f) - (tileSize * 0.50f));
 	
-		go->AddComponent<dae::LevelComponent>(tileSize, globalZoom);
+		go->AddComponent<dae::LevelComponent>(tileSize, globalZoom, tileset, 1);
 
 		scene.Add(go);
 	}
