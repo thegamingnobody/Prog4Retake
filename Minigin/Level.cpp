@@ -5,14 +5,14 @@
 #include <EventManager.h>
 #include <glm/ext/vector_float3.hpp>
 
-dae::LevelComponent::LevelComponent(GameObject* ownerObject, float tileSide, float zoomLevel, int tileSet, int maxToggles)
+dae::LevelComponent::LevelComponent(GameObject* ownerObject, TileData tileData, LevelData levelData)
 	: Component(ownerObject)
 	, m_Level()
 	, m_BasePosition()
-	, m_TileSide(tileSide)
-	, m_ZoomLevel(zoomLevel)
-	, m_TileSet(tileSet)
-	, m_MaxTileToggles(maxToggles)
+	, m_TileSide(tileData.m_TileSide)
+	, m_ZoomLevel(tileData.m_ZoomLevel)
+	, m_TileSet(levelData.m_Tileset)
+	, m_MaxTileToggles(levelData.m_MaxToggles)
 {
 	CreateLevel();
 	m_TargetNumber = ownerObject->GetObjectID();

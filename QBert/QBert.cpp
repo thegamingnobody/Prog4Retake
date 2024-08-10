@@ -23,6 +23,8 @@
 #include <fstream>
 #include <sstream>
 
+dae::LevelData LoadLevel(std::string filePath);
+
 void load()
 {
 	dae::ServiceLocator::RegisterSoundSystem(std::make_unique<dae::DAE_SDL_SoundSystem>());
@@ -34,7 +36,6 @@ void load()
 		dae::ServiceLocator::GetSoundSystem().AddSound(m_SoundfilePaths[soundIndex]);
 	}
 	
-
 	auto& scene = dae::SceneManager::GetInstance().CreateScene("Demo");
 	auto& inputManager = dae::InputManager::GetInstance();
 
@@ -52,43 +53,23 @@ void load()
 	{
 		go = std::make_shared<dae::GameObject>("Level");
 
-		int tileset{};
+		dae::LevelData currentLevel{ LoadLevel("../Data/Level1.txt") };
 
-		std::ifstream levelFile{ "../Data/Level1.txt" };
-		if (!levelFile) 
+		if (currentLevel.m_IsValid)
 		{
-			std::cout << "cannot open or find file\n";
-			return;
+			dae::SourceRectangle sourceRect = dae::SourceRectangle(192.0f, 96.0f, tileSize, tileSize, tileSize * currentLevel.m_Tileset, 0.0f);
+
+			auto& textureComponent = go->AddComponent<dae::TextureComponent>("Tiles.png", sourceRect, globalZoom);
+			auto textureDimentions = textureComponent.GetSize();
+
+			go->AddComponent<dae::TransformComponent>(	static_cast<float>(dae::Minigin::m_WindowWidth  * 0.50f) - (tileSize * 0.50f),
+														static_cast<float>(dae::Minigin::m_WindowHeight * 0.25f) - (tileSize * 0.50f));
+	
+			go->AddComponent<dae::LevelComponent>(dae::TileData(tileSize, globalZoom), currentLevel);
+
+			scene.Add(go);
 		}
 
-
-		std::string line;
-		while (std::getline(levelFile, line)) 
-		{
-			std::istringstream input{ line };
-			std::string tag;
-			while (input >> tag) 
-			{
-				if (tag == "Tileset") 
-				{
-					input >> tileset;
-				}
-	
-			}
-		}
-		levelFile.close();
-
-		dae::SourceRectangle sourceRect = dae::SourceRectangle(192.0f, 96.0f, tileSize, tileSize, tileSize * tileset, 0.0f);
-
-		auto& textureComponent = go->AddComponent<dae::TextureComponent>("Tiles.png", sourceRect, globalZoom);
-		auto textureDimentions = textureComponent.GetSize();
-
-		go->AddComponent<dae::TransformComponent>(	static_cast<float>(dae::Minigin::m_WindowWidth  * 0.50f) - (tileSize * 0.50f),
-													static_cast<float>(dae::Minigin::m_WindowHeight * 0.25f) - (tileSize * 0.50f));
-	
-		go->AddComponent<dae::LevelComponent>(tileSize, globalZoom, tileset, 1);
-
-		scene.Add(go);
 	}
 
 #pragma endregion
@@ -152,4 +133,44 @@ int main(int, char* [])
 	engine.Run(load);
 
 	return 0;
+}
+
+dae::LevelData LoadLevel(std::string filePath)
+{
+	dae::LevelData result{};
+
+	std::ifstream levelFile{ filePath };
+	if (!levelFile)
+	{
+		std::cout << "cannot open or find file\n";
+		result.m_IsValid = false;
+		return result;
+	}
+
+
+	std::string line;
+	while (std::getline(levelFile, line))
+	{
+		std::istringstream input{ line };
+		std::string tag;
+		while (input >> tag)
+		{
+			if (tag == "Round")
+			{
+				input >> result.m_Round;
+			}
+			else if (tag == "Tileset")
+			{
+				input >> result.m_Tileset;
+			}
+			else if (tag == "MaxToggles")
+			{
+				input >> result.m_MaxToggles;
+			}
+
+		}
+	}
+	levelFile.close();
+
+	return result;
 }

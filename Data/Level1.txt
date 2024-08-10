@@ -1,3 +1,3 @@
 Round 1
 Tileset 1
-MaxToggles 1
+MaxToggles 2

@@ -12,17 +12,51 @@ namespace dae
 	struct TileCoordinates
 	{
 		TileCoordinates(int column, int row) 
-		{
-			m_Column = column; 
-			m_Row = row; 
-		}
+			: m_Column	(column) 
+			, m_Row		(row)
+		{}
+
 		int m_Column;
 		int m_Row;
 	};
+
+	struct TileData
+	{
+		TileData(float tileSide, float zoomLevel)
+			: m_TileSide(tileSide)
+			, m_ZoomLevel(zoomLevel)
+		{}
+
+		float m_TileSide;
+		float m_ZoomLevel;
+	};
+
+	struct LevelData
+	{
+		LevelData()
+			: m_IsValid(true)
+			, m_Round()
+			, m_Tileset()
+			, m_MaxToggles()
+		{}
+
+		LevelData(int round, int tileset, int maxToggles)
+			: m_IsValid(true)
+			, m_Round(round)
+			, m_Tileset(tileset)
+			, m_MaxToggles(maxToggles)
+		{}
+		
+		bool m_IsValid;
+		int m_Round;
+		int m_Tileset;
+		int m_MaxToggles;
+	};
+
 	class LevelComponent final : public Component, public Observer
 	{
 	public:
-		LevelComponent(GameObject* ownerObject, float tileSide, float zoomLevel, int tileSet, int maxToggles);
+		LevelComponent(GameObject* ownerObject, TileData tileData, LevelData levelData);
 
 		virtual ~LevelComponent() = default;
 		LevelComponent(const LevelComponent& other) = delete;

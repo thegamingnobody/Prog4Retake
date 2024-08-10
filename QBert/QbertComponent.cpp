@@ -43,11 +43,11 @@ void dae::QbertComponent::Notify(const Event& event)
 
 		glm::vec3 coords{ static_cast<int>(m_Coordinates.m_Row), static_cast<int>(m_Coordinates.m_Column), 0.0f };
 
-		coords.x = -(coords.y);
-		coords.y = -(coords.x);
+		coords.x = -(coords.x);
+		coords.y = -(coords.y);
 
 		//bad magic numbers and copied code from level component
-		coords = glm::vec3(((coords.x * 0.50f) - (coords.y * 0.50f)), ((coords.x * 0.75f) + (coords.y * 0.75f)), 0);
+		coords = glm::vec3(((coords.x * 0.50f) + (coords.y * 0.50f)), ((coords.x * 0.75f) + (coords.y * 0.75f)), 0);
 		coords *= 32.0f * 2.0f;
 
 
@@ -57,8 +57,8 @@ void dae::QbertComponent::Notify(const Event& event)
 		auto owner{ GetOwner() };
 		owner->NotifyComponents(eventToNotify);
 
-		m_Coordinates.m_Row = 0;
-		m_Coordinates.m_Column = 0;
+		//m_Coordinates.m_Row = 0;
+		//m_Coordinates.m_Column = 0;
 
 
 		break;

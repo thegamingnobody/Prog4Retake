@@ -82,7 +82,7 @@ private:
 	{
 		if (m_Sounds[soundInfo.m_SoundId].m_Chunk)
 		{
-			//Mix_VolumeChunk(m_Chunk, static_cast<int>(soundInfo.m_Volume * MIX_MAX_VOLUME));
+			Mix_VolumeChunk(m_Sounds[soundInfo.m_SoundId].m_Chunk, static_cast<int>(soundInfo.m_Volume * MIX_MAX_VOLUME));
 			Mix_PlayChannel(-1, m_Sounds[soundInfo.m_SoundId].m_Chunk, 0);
 			//Mix_FreeChunk(m_Chunk);
 		}
