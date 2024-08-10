@@ -19,11 +19,7 @@
 #include <ServiceLocator.h>
 #include <soundSystem.h>
 #include <DAE_SDL_SoundSystem.h>
-
-#include <fstream>
-#include <sstream>
-
-dae::LevelData LoadLevel(std::string filePath);
+#include "SkipLevelCommand.h"
 
 void load()
 {
@@ -38,6 +34,7 @@ void load()
 	
 	auto& scene = dae::SceneManager::GetInstance().CreateScene("Demo");
 	auto& inputManager = dae::InputManager::GetInstance();
+	auto& levelLoader = dae::LevelLoader::GetInstance();
 
 #pragma region standard
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
@@ -53,7 +50,9 @@ void load()
 	{
 		go = std::make_shared<dae::GameObject>("Level");
 
-		dae::LevelData currentLevel{ LoadLevel("../Data/Level1.txt") };
+		levelLoader.ReadAndSaveLevel("../Data/Level1.txt");
+
+		dae::RoundData currentLevel{ levelLoader.GetRound(1, 1) };
 
 		if (currentLevel.m_IsValid)
 		{
@@ -65,7 +64,9 @@ void load()
 			go->AddComponent<dae::TransformComponent>(	static_cast<float>(dae::Minigin::m_WindowWidth  * 0.50f) - (tileSize * 0.50f),
 														static_cast<float>(dae::Minigin::m_WindowHeight * 0.25f) - (tileSize * 0.50f));
 	
-			go->AddComponent<dae::LevelComponent>(dae::TileData(tileSize, globalZoom), currentLevel);
+			/*auto& levelCpnt =*/ go->AddComponent<dae::LevelComponent>(dae::TileData(tileSize, globalZoom), currentLevel);
+			
+			//levelCpnt.LoadNewRound();
 
 			scene.Add(go);
 		}
@@ -88,6 +89,9 @@ void load()
 	inputManager.AddAction(dae::KeyboardKeys::ArrowDown,		dae::InputType::PressedThisFrame, std::make_shared<dae::MoveCommand>(keyboardIndex,		glm::vec3( 0,  1,  0)), keyboardIndex);
 	inputManager.AddAction(dae::KeyboardKeys::ArrowLeft,		dae::InputType::PressedThisFrame, std::make_shared<dae::MoveCommand>(keyboardIndex,		glm::vec3(-1,  0,  0)), keyboardIndex);
 	inputManager.AddAction(dae::KeyboardKeys::ArrowRight,		dae::InputType::PressedThisFrame, std::make_shared<dae::MoveCommand>(keyboardIndex,		glm::vec3( 1,  0,  0)), keyboardIndex);
+
+
+	inputManager.AddAction(dae::KeyboardKeys::F1, dae::InputType::PressedThisFrame, std::make_shared<dae::SkipLevelCommand>(), keyboardIndex);
 
 #pragma endregion
 
@@ -133,48 +137,4 @@ int main(int, char* [])
 	engine.Run(load);
 
 	return 0;
-}
-
-dae::LevelData LoadLevel(std::string filePath)
-{
-	dae::LevelData result{};
-
-	std::ifstream levelFile{ filePath };
-	if (!levelFile)
-	{
-		std::cout << "cannot open or find file\n";
-		result.m_IsValid = false;
-		return result;
-	}
-
-
-	std::string line;
-	while (std::getline(levelFile, line))
-	{
-		std::istringstream input{ line };
-		std::string tag;
-		while (input >> tag)
-		{
-			if (tag == "Round")
-			{
-				input >> result.m_Round;
-			}
-			else if (tag == "Tileset")
-			{
-				input >> result.m_TileSet;
-			}
-			else if (tag == "MaxToggles")
-			{
-				input >> result.m_MaxToggles;
-			}
-			else if (tag == "AllowDecreaseTile")
-			{
-				input >> result.m_AllowTileDecrease;
-			}
-
-		}
-	}
-	levelFile.close();
-
-	return result;
 }

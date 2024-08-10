@@ -4,16 +4,16 @@
 #include "TransformComponent.h"
 #include <EventManager.h>
 #include <glm/ext/vector_float3.hpp>
+#include "../QBert/LevelLoader.h"
 
-dae::LevelComponent::LevelComponent(GameObject* ownerObject, TileData tileData, LevelData levelData)
+
+dae::LevelComponent::LevelComponent(GameObject* ownerObject, TileData tileData, RoundData levelData)
 	: Component(ownerObject)
 	, m_Level()
 	, m_BasePosition()
 	, m_TileSide(tileData.m_TileSide)
 	, m_ZoomLevel(tileData.m_ZoomLevel)
 	, m_LevelData(levelData)
-	//, m_TileSet(levelData.m_Tileset)
-	//, m_MaxTileToggles(levelData.m_MaxToggles)
 {
 	CreateLevel();
 	m_TargetNumber = ownerObject->GetObjectID();
@@ -25,6 +25,7 @@ dae::LevelComponent::LevelComponent(GameObject* ownerObject, TileData tileData, 
 	}
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::IsTileValid);
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::ToggleTile);
+	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::LoadNextLevel);
 }
 
 dae::SourceRectangle dae::LevelComponent::GetSourceRect(int column, int row) const
@@ -126,6 +127,9 @@ void dae::LevelComponent::Notify(const Event& event)
 			break;
 			
 		}
+	case EventType::LoadNextLevel:
+		LoadNewRound();
+		break;
 	}
 }
 
@@ -161,4 +165,18 @@ void dae::LevelComponent::ToggleTile(int column, int row)
 			m_Level[row][column] += 1;
 		}
 	}
+}
+
+void dae::LevelComponent::LoadNewRound()
+{
+	auto newRound{ LevelLoader::GetInstance().GetNextRound(m_LevelData.m_Level, m_LevelData.m_Round) };
+	m_LevelData = newRound;
+
+	for (int i = 0; i < m_Level.size(); i++)
+	{
+		m_Level[i].clear();
+	}
+	m_Level.clear();
+
+	CreateLevel();
 }

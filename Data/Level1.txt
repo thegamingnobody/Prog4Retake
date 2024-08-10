@@ -1,4 +1,11 @@
 Round 1
+Tileset 0
+MaxToggles 1
+AllowDecreaseTile 0
+End
+
+Round 2
 Tileset 1
 MaxToggles 1
-AllowDecreaseTile 1
+AllowDecreaseTile 0
+End

@@ -26,6 +26,8 @@ namespace dae
 		PlaySound,
 		StopSound,
 		StopAllSounds,
+
+		LoadNextLevel,
 	};
 
 	struct Event
