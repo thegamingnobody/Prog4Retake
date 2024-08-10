@@ -33,24 +33,19 @@ namespace dae
 
 	struct LevelData
 	{
-		LevelData()
-			: m_IsValid(true)
-			, m_Round()
-			, m_Tileset()
-			, m_MaxToggles()
-		{}
-
-		LevelData(int round, int tileset, int maxToggles)
+		LevelData(int round = 1, int tileset = 1, int maxToggles = 1, bool allowTileDecrease = false)
 			: m_IsValid(true)
 			, m_Round(round)
-			, m_Tileset(tileset)
+			, m_TileSet(tileset)
 			, m_MaxToggles(maxToggles)
+			, m_AllowTileDecrease(allowTileDecrease)
 		{}
 		
 		bool m_IsValid;
 		int m_Round;
-		int m_Tileset;
+		int m_TileSet;
 		int m_MaxToggles;
+		bool m_AllowTileDecrease;
 	};
 
 	class LevelComponent final : public Component, public Observer
@@ -85,8 +80,10 @@ namespace dae
 		glm::vec3 m_BasePosition;
 		float const m_TileSide;
 		float const m_ZoomLevel;
-		int m_TileSet;
-		int const m_MaxTileToggles;
+
+		LevelData m_LevelData;
+		//int m_TileSet;
+		//int const m_MaxTileToggles;
 
 	};
 }

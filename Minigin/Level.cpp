@@ -11,8 +11,9 @@ dae::LevelComponent::LevelComponent(GameObject* ownerObject, TileData tileData, 
 	, m_BasePosition()
 	, m_TileSide(tileData.m_TileSide)
 	, m_ZoomLevel(tileData.m_ZoomLevel)
-	, m_TileSet(levelData.m_Tileset)
-	, m_MaxTileToggles(levelData.m_MaxToggles)
+	, m_LevelData(levelData)
+	//, m_TileSet(levelData.m_Tileset)
+	//, m_MaxTileToggles(levelData.m_MaxToggles)
 {
 	CreateLevel();
 	m_TargetNumber = ownerObject->GetObjectID();
@@ -57,7 +58,7 @@ void dae::LevelComponent::CreateLevel()
 		std::vector<int> collumn;
 		for (int row = 0; row < (nrOfRows - column); row++)
 		{
-			collumn.emplace_back(m_TileSet * 3);
+			collumn.emplace_back(m_LevelData.m_TileSet * 3);
 		}
 		m_Level.emplace_back(collumn);
 	}
@@ -141,7 +142,21 @@ void dae::LevelComponent::ToggleTile(int column, int row)
 	if (DoesTileExist(column, row))
 	{
 		int currentTileId{ m_Level[row][column] };
-		if (currentTileId % 3 < m_MaxTileToggles)
+
+		if (m_LevelData.m_AllowTileDecrease)
+		{
+			int ZeroToggleID{ m_LevelData.m_TileSet * 3 };
+			int tempTileID{ m_Level[row][column] - ZeroToggleID };
+
+			tempTileID++;
+
+			tempTileID = tempTileID % (m_LevelData.m_MaxToggles + 1);
+
+			tempTileID += ZeroToggleID;
+
+			m_Level[row][column] = tempTileID;
+		}
+		else if (currentTileId % 3 < m_LevelData.m_MaxToggles)
 		{
 			m_Level[row][column] += 1;
 		}

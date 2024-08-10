@@ -57,7 +57,7 @@ void load()
 
 		if (currentLevel.m_IsValid)
 		{
-			dae::SourceRectangle sourceRect = dae::SourceRectangle(192.0f, 96.0f, tileSize, tileSize, tileSize * currentLevel.m_Tileset, 0.0f);
+			dae::SourceRectangle sourceRect = dae::SourceRectangle(192.0f, 96.0f, tileSize, tileSize, tileSize * currentLevel.m_TileSet, 0.0f);
 
 			auto& textureComponent = go->AddComponent<dae::TextureComponent>("Tiles.png", sourceRect, globalZoom);
 			auto textureDimentions = textureComponent.GetSize();
@@ -109,7 +109,7 @@ void load()
 
 	{
 		go = std::make_shared<dae::GameObject>("Player", -1);
-		dae::SourceRectangle sourceRect = dae::SourceRectangle(68.0f, 16.0f, 17.0f, 16.0f, 51.0f, 0.0f);
+		dae::SourceRectangle sourceRect = dae::SourceRectangle(64.0f, 16.0f, 16.0f, 16.0f, 48.0f, 0.0f);
 
 		auto& textureComponent = go->AddComponent<dae::TextureComponent>("Qbert1.png", sourceRect, globalZoom);
 		auto textureDimentions = textureComponent.GetSize();
@@ -161,11 +161,15 @@ dae::LevelData LoadLevel(std::string filePath)
 			}
 			else if (tag == "Tileset")
 			{
-				input >> result.m_Tileset;
+				input >> result.m_TileSet;
 			}
 			else if (tag == "MaxToggles")
 			{
 				input >> result.m_MaxToggles;
+			}
+			else if (tag == "AllowDecreaseTile")
+			{
+				input >> result.m_AllowTileDecrease;
 			}
 
 		}
