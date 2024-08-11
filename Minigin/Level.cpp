@@ -209,6 +209,10 @@ void dae::LevelComponent::LoadNewRound()
 	m_Level.clear();
 
 	CreateLevel();
+
+	Event eventToNotify{ dae::EventType::RespawnPlayer, std::tuple<>(), -1 };
+
+	dae::EventManager::GetInstance().PushEvent(eventToNotify);
 }
 
 bool dae::LevelComponent::IsLevelFinished()

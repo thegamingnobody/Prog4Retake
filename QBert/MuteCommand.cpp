@@ -4,4 +4,5 @@
 void dae::MuteCommand::Execute()
 {
 	dae::ServiceLocator::GetSoundSystem().ToggleMute();
+	dae::ServiceLocator::GetSoundSystem().StopAllSounds();
 }

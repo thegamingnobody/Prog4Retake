@@ -45,7 +45,7 @@ public:
 	}
 	void StopAllSounds()
 	{
-
+		Mix_HaltChannel(-1);
 	}
 
 	void ProcessQueue()

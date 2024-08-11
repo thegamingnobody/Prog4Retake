@@ -34,7 +34,7 @@ void dae::CurseComponent::Notify(const Event& event)
 
 		transformComponent->MoveTo(pos);
 
-		owner->GetComponent<dae::TextureComponent>()->ToggleRender();
+		owner->GetComponent<dae::TextureComponent>()->ToggleRender(true);
 
 		dae::ServiceLocator::GetSoundSystem().PlaySound(SoundId(dae::SFX::Swearing));
 		break;
@@ -44,7 +44,7 @@ void dae::CurseComponent::Notify(const Event& event)
 			auto owner{ GetOwner() };
 			if (not owner) break;
 
-			owner->GetComponent<dae::TextureComponent>()->ToggleRender();
+			owner->GetComponent<dae::TextureComponent>()->ToggleRender(false);
 		}
 		break;
 	}
