@@ -28,6 +28,7 @@ namespace dae
 		StopAllSounds,
 
 		LoadNextLevel,
+		GameOver,
 	};
 
 	struct Event

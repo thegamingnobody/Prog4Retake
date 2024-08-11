@@ -59,7 +59,7 @@ namespace dae
 		void Notify(const Event& event) override;
 	};
 
-	class DeathState : public State
+	class DeathState : public State, public Observer
 	{
 	public:
 		DeathState(GameObject* object, float deathTimer);
@@ -68,9 +68,12 @@ namespace dae
 		void Update(float const deltaTime) override;
 		void OnExit() override;
 
+		void Notify(const Event& event) override;
+
 	private:
 		float m_DeathTimer;
 		float m_AccumulatedTime;
+		bool m_StopTimer;
 	};
 
 

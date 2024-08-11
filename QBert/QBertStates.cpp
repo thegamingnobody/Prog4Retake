@@ -5,6 +5,7 @@
 #include <EventManager.h>
 #include <ServiceLocator.h>
 #include "SFXEnum.h"
+#include "CountersComponent.h"
 
 dae::JumpingState::JumpingState(GameObject* object, const glm::vec3& direction, float jumpTime, bool isTileValid)
 	: State(object)
@@ -180,16 +181,23 @@ dae::DeathState::DeathState(GameObject* object, float deathTimer)
 	: State(object)
 	, m_DeathTimer(deathTimer)
 	, m_AccumulatedTime(0.0f)
+	, m_StopTimer(false)
 {
 
 }
 
 void dae::DeathState::OnEnter()
 {
+	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::GameOver);
+	auto counterComponent = GetObject()->GetComponent<dae::CounterComponent>();
+	counterComponent->DecreaseValue("Lives", 1);
 }
 void dae::DeathState::Update(float const deltaTime)
 {
-	m_AccumulatedTime += deltaTime;
+	if (not m_StopTimer)
+	{
+		m_AccumulatedTime += deltaTime;
+	}
 
 	if (m_AccumulatedTime >= m_DeathTimer)
 	{
@@ -202,4 +210,16 @@ void dae::DeathState::Update(float const deltaTime)
 }
 void dae::DeathState::OnExit()
 {
+	dae::EventManager::GetInstance().RemoveObserver(this);
+}
+
+void dae::DeathState::Notify(const Event& event)
+{
+	switch (event.m_type)
+	{
+	case dae::EventType::GameOver:
+		m_AccumulatedTime = 0.0f;
+		m_StopTimer = true;
+		break;
+	}
 }

@@ -87,8 +87,8 @@ void dae::LevelComponent::Render() const
 	auto textureCpnt = GetOwner()->GetComponent<dae::TextureComponent>();
 	auto transformCpnt = GetOwner()->GetComponent<dae::TransformComponent>();
 
-	if (textureCpnt == nullptr) return;
-	if (transformCpnt == nullptr) return;
+	assert(textureCpnt   != nullptr);
+	assert(transformCpnt != nullptr);
 
 	float const tileSize{ m_TileSide * textureCpnt->GetRenderScale() };
 

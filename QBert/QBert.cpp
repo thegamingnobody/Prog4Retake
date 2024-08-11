@@ -13,14 +13,7 @@
 #include "ManagerIncludes.h"
 
 #include <Scene.h>
-#include "QbertComponent.h"
-#include "CurseComponent.h"
 
-#include <ServiceLocator.h>
-#include <soundSystem.h>
-#include <DAE_SDL_SoundSystem.h>
-#include "SkipLevelCommand.h"
-#include "MuteCommand.h"
 
 void load()
 {
@@ -125,11 +118,36 @@ void load()
 		
 		go->AddComponent<dae::QbertComponent>(curseGo.get());
 
+		auto& counterComponent = go->AddComponent<dae::CounterComponent>();
+		counterComponent.AddCounter("Lives", dae::CounterTypes::Lives, 4, true);
+
 		scene.Add(go);
 	}
 
 #pragma endregion
 
+
+#pragma region HUD
+	{
+		go = std::make_shared<dae::GameObject>("HUD Health", -1);
+		go->AddComponent<dae::TextureComponent>("Heart.png");
+		go->AddComponent<dae::TransformComponent>(	static_cast<float>(dae::Minigin::m_WindowWidth  * 0.10f),
+													static_cast<float>(dae::Minigin::m_WindowHeight * 0.15f));
+		go->AddComponent<dae::HUDComponent>(dae::HUDType::Lives);
+		scene.Add(go);
+	}
+	{
+		go = std::make_shared<dae::GameObject>("HUD Game Over", -1);
+		auto& textureComponent = go->AddComponent<dae::TextureComponent>("Game Over Title.png");
+		textureComponent.ToggleRender();
+		auto textureDimentions = textureComponent.GetSize();
+		go->AddComponent<dae::TransformComponent>(	static_cast<float>(dae::Minigin::m_WindowWidth  * 0.50f) - (textureDimentions.x * 0.50f),
+													static_cast<float>(dae::Minigin::m_WindowHeight * 0.50f) - (textureDimentions.y * 0.50f));
+		go->AddComponent<dae::HUDComponent>(dae::HUDType::GameOver);
+		scene.Add(go);
+	}
+
+#pragma endregion
 }
 
 

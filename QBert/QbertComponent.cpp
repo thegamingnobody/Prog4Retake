@@ -17,6 +17,7 @@ dae::QbertComponent::QbertComponent(GameObject* object, GameObject* curseObject,
 
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::ConfirmMovement);
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::RespawnPlayer);
+	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::GameOver);
 }
 
 void dae::QbertComponent::Update(float const deltaTime)
