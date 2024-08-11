@@ -41,6 +41,8 @@ namespace dae
 		void LoadNewRound();
 
 	private:
+		bool IsLevelFinished();
+		
 		std::vector<std::vector<int>> m_Level;
 		glm::vec3 m_BasePosition;
 		float const m_TileSide;

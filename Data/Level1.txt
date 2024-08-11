@@ -9,3 +9,15 @@ Tileset 1
 MaxToggles 1
 AllowDecreaseTile 0
 End
+
+Round 3
+Tileset 2
+MaxToggles 1
+AllowDecreaseTile 0
+End
+
+Round 4
+Tileset 3
+MaxToggles 1
+AllowDecreaseTile 0
+End

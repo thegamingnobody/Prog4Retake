@@ -63,7 +63,6 @@ void dae::LevelComponent::CreateLevel()
 		}
 		m_Level.emplace_back(collumn);
 	}
-
 }
 
 void dae::LevelComponent::Render() const
@@ -164,6 +163,11 @@ void dae::LevelComponent::ToggleTile(int column, int row)
 		{
 			m_Level[row][column] += 1;
 		}
+
+		if (IsLevelFinished())
+		{
+			LoadNewRound();
+		}
 	}
 }
 
@@ -179,4 +183,19 @@ void dae::LevelComponent::LoadNewRound()
 	m_Level.clear();
 
 	CreateLevel();
+}
+
+bool dae::LevelComponent::IsLevelFinished()
+{
+	int targetID{ (m_LevelData.m_TileSet * 3) + m_LevelData.m_MaxToggles };
+
+	for (int  column = 0; column < m_Level.size(); column++)
+	{
+		for (int row = 0; row < m_Level[column].size(); row++)
+		{
+			if (m_Level[column][row] != targetID) return false;
+		}
+	}
+
+	return true;
 }

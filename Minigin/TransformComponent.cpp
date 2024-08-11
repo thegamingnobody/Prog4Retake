@@ -21,13 +21,11 @@ void dae::TransformComponent::Update(float const deltaTime)
 {
 	if (m_IsMoving)
 	{
-		float const slideTime{ 0.4f };
-
 		m_AccumulatedTime += deltaTime;
 
-		if (m_AccumulatedTime <= slideTime)
+		if (m_AccumulatedTime <= m_SlideTime)
 		{
-			Move((m_Direction.GetPosition() / slideTime) * deltaTime);
+			Move((m_Direction.GetPosition() / m_SlideTime) * deltaTime);
 		}
 		else
 		{
@@ -107,9 +105,10 @@ void dae::TransformComponent::Notify(const Event& event)
 	{
 	case dae::EventType::MoveObject:
 	{
-		auto castedArguments{ event.GetArgumentsAsTuple<glm::vec3, bool>() };
-		auto newDir{ std::get<0>(castedArguments) };
+		auto castedArguments{ event.GetArgumentsAsTuple<glm::vec3, bool, float>() };
+		auto newDir		{ std::get<0>(castedArguments) };
 		auto shouldSlide{ std::get<1>(castedArguments) };
+		m_SlideTime = std::get<2>(castedArguments);
 
 		if (not(shouldSlide))
 		{
@@ -127,9 +126,10 @@ void dae::TransformComponent::Notify(const Event& event)
 	break;
 	case dae::EventType::MoveObjectTo:
 	{
-		auto castedArguments{ event.GetArgumentsAsTuple<glm::vec3, bool>() };
+		auto castedArguments{ event.GetArgumentsAsTuple<glm::vec3, bool, float>() };
 		auto newDir{ std::get<0>(castedArguments) };
 		auto shouldSlide{ std::get<1>(castedArguments) };
+		m_SlideTime = std::get<2>(castedArguments);
 
 		if (not(shouldSlide))
 		{

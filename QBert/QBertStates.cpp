@@ -21,7 +21,7 @@ void dae::JumpingState::Update(float const deltaTime)
 {	
 	m_AccumulatedTime += deltaTime;
 
-	std::tuple<glm::vec3, bool> eventArguments{ (m_Direction / m_MaxJumpTime) * deltaTime, false };
+	std::tuple<glm::vec3, bool, float> eventArguments{ (m_Direction / m_MaxJumpTime) * deltaTime, false, m_MaxJumpTime };
 
 	Event eventToNotify{ dae::EventType::MoveObject, eventArguments, -1 };
 	auto object{ GetObject() };
@@ -109,7 +109,7 @@ void dae::RequestingMovementState::Notify(const Event& event)
 			auto& newDirection{ std::get<1>(arguments) };
 			//auto& originalDirection{ std::get<2>(arguments) };
 
-			float maxJumpTime{ 0.4f };
+			float maxJumpTime{ 0.35f };
 
 			GetObject()->GetComponent<dae::QbertComponent>()->SetState(std::make_unique<JumpingState>(GetObject(), newDirection, maxJumpTime, isTileValid));
 

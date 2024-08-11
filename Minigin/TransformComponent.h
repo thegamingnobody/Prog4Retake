@@ -43,6 +43,8 @@ namespace dae
 
 		bool m_IsMoving;
 
+		float m_SlideTime;
+
 		void UpdateTransform();
 	};
 }
