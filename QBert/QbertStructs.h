@@ -42,5 +42,4 @@ namespace dae
 		bool m_AllowTileDecrease;
 	};
 
-
 }

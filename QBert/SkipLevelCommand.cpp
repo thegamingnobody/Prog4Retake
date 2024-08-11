@@ -4,7 +4,7 @@
 
 void dae::SkipLevelCommand::Execute()
 {
-	Event eventToNotify{ dae::EventType::LoadNextLevel, std::tuple<>(), -1 };
+	Event eventToNotify{ dae::EventType::LoadNextLevel, std::tuple<bool>(false), -1 };
 
 	dae::EventManager::GetInstance().PushEvent(eventToNotify);
 

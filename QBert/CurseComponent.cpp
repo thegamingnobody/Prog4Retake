@@ -3,6 +3,8 @@
 #include <EventManager.h>
 #include <TransformComponent.h>
 #include <TextureComponent.h>
+#include <ServiceLocator.h>
+#include "SFXEnum.h"
 
 dae::CurseComponent::CurseComponent(GameObject* object)
 	: Component(object)
@@ -34,6 +36,7 @@ void dae::CurseComponent::Notify(const Event& event)
 
 		owner->GetComponent<dae::TextureComponent>()->ToggleRender();
 
+		dae::ServiceLocator::GetSoundSystem().PlaySound(SoundId(dae::SFX::Swearing), 0.1f);
 		break;
 	}
 	case dae::EventType::RespawnPlayer:

@@ -51,7 +51,7 @@ void dae::QbertComponent::Notify(const Event& event)
 		coords.x = -(coords.x);
 		coords.y = -(coords.y);
 
-		std::tuple<glm::vec3, bool> eventArguments{ coords, false };
+		std::tuple<glm::vec3, bool, float> eventArguments{ coords, false, 0.0f };
 
 		Event eventToNotify{ dae::EventType::MoveObject, eventArguments, -1 };
 		auto owner{ GetOwner() };

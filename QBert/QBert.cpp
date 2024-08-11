@@ -25,7 +25,7 @@ void load()
 {
 	dae::ServiceLocator::RegisterSoundSystem(std::make_unique<dae::DAE_SDL_SoundSystem>());
 
-	std::vector<std::string> m_SoundfilePaths{ "../Data/Sounds/QBert Jump.wav" };
+	std::vector<std::string> m_SoundfilePaths{ "../Data/Sounds/QBert Jump.wav", "../Data/Sounds/Round Complete Tune.wav", "../Data/Sounds/Swearing.wav" };
 
 	for (int soundIndex = 0; soundIndex < m_SoundfilePaths.size(); soundIndex++)
 	{

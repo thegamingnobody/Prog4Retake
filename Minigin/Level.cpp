@@ -5,6 +5,8 @@
 #include <EventManager.h>
 #include <glm/ext/vector_float3.hpp>
 #include "../QBert/LevelLoader.h"
+#include <ServiceLocator.h>
+#include "../QBert/SFXEnum.h"
 
 
 dae::LevelComponent::LevelComponent(GameObject* ownerObject, TileData tileData, RoundData levelData)
@@ -14,6 +16,9 @@ dae::LevelComponent::LevelComponent(GameObject* ownerObject, TileData tileData, 
 	, m_TileSide(tileData.m_TileSide)
 	, m_ZoomLevel(tileData.m_ZoomLevel)
 	, m_LevelData(levelData)
+	, m_PlayLevelDoneAnim(false)
+	, m_AcumulatedTime(0.00f)
+	, m_FlashCycleTime(0.10f)
 {
 	CreateLevel();
 	m_TargetNumber = ownerObject->GetObjectID();
@@ -34,6 +39,7 @@ dae::SourceRectangle dae::LevelComponent::GetSourceRect(int column, int row) con
 	assert(m_Level[column].size() - 1 >= row);
 
 	int tileID{ m_Level[column][row] };
+	
 	int const nrOfTilesVertical{ 3 };
 	int const nrOfTilesHorizontal{ 6 };
 
@@ -62,6 +68,16 @@ void dae::LevelComponent::CreateLevel()
 			collumn.emplace_back(m_LevelData.m_TileSet * 3);
 		}
 		m_Level.emplace_back(collumn);
+	}
+}
+
+void dae::LevelComponent::Update(float const deltaTime)
+{
+	if (m_PlayLevelDoneAnim)
+	{
+		m_AcumulatedTime += deltaTime;
+
+		HandleLevelFlashing();
 	}
 }
 
@@ -113,21 +129,29 @@ void dae::LevelComponent::Notify(const Event& event)
 			Event eventToNotify{ dae::EventType::ConfirmMovement, newEventArguments, -1 };
 
 			dae::EventManager::GetInstance().PushEvent(eventToNotify);
-
-			break;
-
 		}
+		break;
 	case EventType::ToggleTile:
 		{
 			auto arguments{ event.GetArgumentsAsTuple<dae::TileCoordinates, dae::TileCoordinates>() };
 			auto pos	{ std::get<0>(arguments) };
 			auto direction{ std::get<1>(arguments) };
-			ToggleTile(pos.m_Column, pos.m_Row);
-			break;
-			
+			ToggleTile(pos.m_Column, pos.m_Row);		
 		}
+		break;
 	case EventType::LoadNextLevel:
-		LoadNewRound();
+		{
+			auto arguments{ event.GetArgumentsAsTuple<bool>() };
+			if (std::get<0>(arguments))
+			{
+				PlayLevelDoneAnim(true);
+				dae::ServiceLocator::GetSoundSystem().PlaySound(SoundId(dae::SFX::LevelDone), 0.1f);
+			}
+			else
+			{
+				LoadNewRound();
+			}
+		}
 		break;
 	}
 }
@@ -166,7 +190,9 @@ void dae::LevelComponent::ToggleTile(int column, int row)
 
 		if (IsLevelFinished())
 		{
-			LoadNewRound();
+			std::tuple<bool> eventArguments{ true };
+			Event eventToNotify{ dae::EventType::LoadNextLevel, eventArguments, -1 };
+			Notify(eventToNotify);
 		}
 	}
 }
@@ -198,4 +224,35 @@ bool dae::LevelComponent::IsLevelFinished()
 	}
 
 	return true;
+}
+
+void dae::LevelComponent::PlayLevelDoneAnim(bool playAnim)
+{
+	m_PlayLevelDoneAnim = playAnim;
+	m_FlashCyclesCountdown = 16;
+}
+
+void dae::LevelComponent::HandleLevelFlashing()
+{
+	if (m_AcumulatedTime >= m_FlashCycleTime)
+	{
+		m_AcumulatedTime = 0.0f;
+		m_FlashCyclesCountdown--;
+
+		if (m_FlashCyclesCountdown <= 0)
+		{
+			m_PlayLevelDoneAnim = false;
+			LoadNewRound();
+		}
+		else
+		{
+			for (int column = 0; column < m_Level.size(); column++)
+			{
+				for (int row = 0; row < m_Level[column].size(); row++)
+				{
+					m_Level[column][row] = (((m_Level[column][row] + 1) % 3) + (m_LevelData.m_TileSet * 3));
+				}
+			}
+		}
+	}
 }

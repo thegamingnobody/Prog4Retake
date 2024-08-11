@@ -26,6 +26,7 @@ namespace dae
 
 		void CreateLevel();
 
+		void Update(float const deltaTime) override;
 		void Render() const override;
 
 		bool DoesTileExist(int column, int row);
@@ -42,7 +43,10 @@ namespace dae
 
 	private:
 		bool IsLevelFinished();
-		
+
+		void PlayLevelDoneAnim(bool playAnim);
+		void HandleLevelFlashing();
+
 		std::vector<std::vector<int>> m_Level;
 		glm::vec3 m_BasePosition;
 		float const m_TileSide;
@@ -52,6 +56,10 @@ namespace dae
 		//int m_TileSet;
 		//int const m_MaxTileToggles;
 
+		bool m_PlayLevelDoneAnim;
+		float m_AcumulatedTime;
+		float m_FlashCycleTime;
+		int m_FlashCyclesCountdown;
 	};
 }
 

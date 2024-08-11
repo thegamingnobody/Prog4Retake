@@ -201,6 +201,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPat
     <ClInclude Include="ManagerIncludes.h" />
     <ClInclude Include="QbertComponent.h" />
     <ClInclude Include="QBertStates.h" />
+    <ClInclude Include="SFXEnum.h" />
     <ClInclude Include="SkipLevelCommand.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="QbertStructs.h" />
