@@ -20,7 +20,7 @@ namespace dae
 		DAE_SDL_SoundSystem& operator=(const DAE_SDL_SoundSystem& other) = delete;
 		DAE_SDL_SoundSystem& operator=(DAE_SDL_SoundSystem&& other) = delete;
 
-		void PlaySound(const SoundId soundId, const float volume) override;
+		void PlaySound(const SoundId soundId, const float volume = 0.1f) override;
 		void StopSound(const SoundId soundId) override;
 		void StopAllSounds() override;
 

@@ -20,6 +20,7 @@
 #include <soundSystem.h>
 #include <DAE_SDL_SoundSystem.h>
 #include "SkipLevelCommand.h"
+#include "MuteCommand.h"
 
 void load()
 {
@@ -92,6 +93,7 @@ void load()
 
 
 	inputManager.AddAction(dae::KeyboardKeys::F1, dae::InputType::PressedThisFrame, std::make_shared<dae::SkipLevelCommand>(), keyboardIndex);
+	inputManager.AddAction(dae::KeyboardKeys::M, dae::InputType::PressedThisFrame, std::make_shared<dae::MuteCommand>(), keyboardIndex);
 
 #pragma endregion
 

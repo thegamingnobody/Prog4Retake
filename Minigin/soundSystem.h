@@ -18,11 +18,15 @@ namespace dae
 		SoundSystem& operator=(const SoundSystem& other) = delete;
 		SoundSystem& operator=(SoundSystem&& other) = delete;
 
-		virtual void PlaySound(const SoundId soundId, const float volume) = 0;
+		virtual void PlaySound(const SoundId soundId, const float volume = 0.1f) = 0;
 		virtual void StopSound(const SoundId soundId) = 0;
 		virtual void StopAllSounds() = 0;
 
 		virtual void AddSound(const std::string& path) = 0;
+
+		void ToggleMute() { m_IsMuted = not(m_IsMuted); }
+	protected:
+		bool m_IsMuted{ false };
 	};
 	
 }

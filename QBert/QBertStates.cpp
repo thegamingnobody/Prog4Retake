@@ -143,7 +143,7 @@ void dae::FinishMovementState::Notify(const Event& event)
 	case dae::EventType::MoveFinished:
 		{
 			//play jumping sound
-			dae::ServiceLocator::GetSoundSystem().PlaySound(SoundId(SFX::QBertJump), 0.1f);
+			dae::ServiceLocator::GetSoundSystem().PlaySound(SoundId(SFX::QBertJump));
 			
 			auto coords = GetObject()->GetComponent<dae::QbertComponent>()->GetCoords();
 

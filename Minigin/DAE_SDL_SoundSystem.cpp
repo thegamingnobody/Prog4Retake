@@ -118,7 +118,10 @@ dae::DAE_SDL_SoundSystem::~DAE_SDL_SoundSystem()
 
 void dae::DAE_SDL_SoundSystem::PlaySound(const SoundId soundId, const float volume)
 {
-	m_Impl->PlaySound(soundId, volume);
+	if (not m_IsMuted)
+	{
+		m_Impl->PlaySound(soundId, volume);
+	}
 }
 
 void dae::DAE_SDL_SoundSystem::StopSound(const SoundId soundId)

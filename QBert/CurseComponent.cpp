@@ -36,7 +36,7 @@ void dae::CurseComponent::Notify(const Event& event)
 
 		owner->GetComponent<dae::TextureComponent>()->ToggleRender();
 
-		dae::ServiceLocator::GetSoundSystem().PlaySound(SoundId(dae::SFX::Swearing), 0.1f);
+		dae::ServiceLocator::GetSoundSystem().PlaySound(SoundId(dae::SFX::Swearing));
 		break;
 	}
 	case dae::EventType::RespawnPlayer:

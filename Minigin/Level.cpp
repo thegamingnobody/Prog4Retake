@@ -145,7 +145,7 @@ void dae::LevelComponent::Notify(const Event& event)
 			if (std::get<0>(arguments))
 			{
 				PlayLevelDoneAnim(true);
-				dae::ServiceLocator::GetSoundSystem().PlaySound(SoundId(dae::SFX::LevelDone), 0.1f);
+				dae::ServiceLocator::GetSoundSystem().PlaySound(SoundId(dae::SFX::LevelDone));
 			}
 			else
 			{
