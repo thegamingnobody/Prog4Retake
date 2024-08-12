@@ -3,6 +3,7 @@
 #include <TransformComponent.h>
 #include <GameObject.h>
 #include <EventManager.h>
+#include <TextComponent.h>
 
 
 dae::HUDComponent::HUDComponent(dae::GameObject* object, dae::HUDType HUDType)
@@ -18,23 +19,39 @@ dae::HUDComponent::HUDComponent(dae::GameObject* object, dae::HUDType HUDType)
 
 void dae::HUDComponent::Render() const
 {
-	auto textureCpnt   = GetOwner()->GetComponent<dae::TextureComponent>();
-	auto transformCpnt = GetOwner()->GetComponent<dae::TransformComponent>();
-
-	assert(textureCpnt != nullptr);
+	auto transformCpnt	= GetOwner()->GetComponent<dae::TransformComponent>();
 	assert(transformCpnt != nullptr);
 
 	switch (m_HUDType)
 	{
 	case dae::HUDType::Lives:
-		for (int heart = 0; heart < m_CurrentHealth; heart++)
 		{
-			transformCpnt->SetWorldPosition(m_HealthStartPos.x, m_HealthStartPos.y + (heart * 15.0f));
-			textureCpnt->Render();
+			auto textureCpnt	= GetOwner()->GetComponent<dae::TextureComponent>();
+			assert(textureCpnt != nullptr);
+
+			for (int heart = 0; heart < m_CurrentHealth; heart++)
+			{
+				transformCpnt->SetWorldPosition(m_HealthStartPos.x, m_HealthStartPos.y + (heart * 15.0f));
+				textureCpnt->Render();
+			}
 		}
 		break;
 	case dae::HUDType::GameOver:
-		textureCpnt->Render();
+		{
+			auto textureCpnt	= GetOwner()->GetComponent<dae::TextureComponent>();
+			assert(textureCpnt != nullptr);
+
+			textureCpnt->Render();
+		}
+		break;
+	case dae::HUDType::LevelCount:
+	case dae::HUDType::RoundCount:
+		{
+			auto textCpnt = GetOwner()->GetComponent<dae::TextComponent>();
+			assert(textCpnt != nullptr);
+
+			textCpnt->Render();
+		}
 		break;
 	}
 
@@ -60,13 +77,67 @@ void dae::HUDComponent::Notify(const Event& event)
 			textureCpnt->ToggleRender();
 		}
 		break;
+	case dae::EventType::StartRound:
+		{
+			auto textCpnt = GetOwner()->GetComponent<dae::TextComponent>();	
+			auto transformCpnt = GetOwner()->GetComponent<dae::TransformComponent>();
+			auto arguments = event.GetArgumentsAsTuple<int, int>();
+
+			assert(textCpnt != nullptr);
+			assert(transformCpnt != nullptr);
+
+			switch (m_HUDType)
+			{
+			case dae::HUDType::LevelCount:
+				textCpnt->SetText(("Level: " + std::to_string(std::get<0>(arguments))));
+				break;
+			case dae::HUDType::RoundCount:
+				textCpnt->SetText(("Round: " + std::to_string(std::get<1>(arguments))));
+				break;
+			default:
+				break;
+			}
+		}
+		break;
 	}
 }
 
 void dae::HUDComponent::Reset()
 {
-	m_HealthStartPos = GetOwner()->GetComponent<dae::TransformComponent>()->GetPosition().GetPosition();
-	m_CurrentHealth = m_StartingHealth;
+
+	switch (m_HUDType)
+	{
+	case dae::HUDType::Lives:
+		m_HealthStartPos = GetOwner()->GetComponent<dae::TransformComponent>()->GetPosition().GetPosition();
+		m_CurrentHealth = m_StartingHealth;
+		break;
+	case dae::HUDType::GameOver:
+		{
+			auto textureCpnt = GetOwner()->GetComponent<dae::TextureComponent>();
+			assert(textureCpnt != nullptr);
+
+			textureCpnt->ToggleRender(false);
+		}
+		break;
+	case dae::HUDType::LevelCount:
+		{
+			auto textCpnt = GetOwner()->GetComponent<dae::TextComponent>();	
+			assert(textCpnt != nullptr);
+	
+			textCpnt->SetText(("Level: " + std::to_string(1)));
+		}
+		break;
+	case dae::HUDType::RoundCount:
+		{
+			auto textCpnt = GetOwner()->GetComponent<dae::TextComponent>();	
+			assert(textCpnt != nullptr);
+	
+			textCpnt->SetText(("Round: " + std::to_string(1)));
+		}
+		break;
+	default:
+		break;
+	}
 }
 
 void dae::HUDComponent::SubscribeToEvents()
@@ -78,6 +149,10 @@ void dae::HUDComponent::SubscribeToEvents()
 		break;
 	case dae::HUDType::GameOver:
 		dae::EventManager::GetInstance().AddObserver(this, dae::EventType::GameOver);
+		break;
+	case dae::HUDType::LevelCount:
+	case dae::HUDType::RoundCount:
+		dae::EventManager::GetInstance().AddObserver(this, dae::EventType::StartRound);
 		break;
 	}
 }

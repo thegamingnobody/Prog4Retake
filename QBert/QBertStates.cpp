@@ -43,18 +43,23 @@ void dae::JumpingState::OnExit()
 
 dae::IdleState::IdleState(GameObject* object)
 	: State(object)
+	, m_AllowMovement(true)
 {
 }
 
 void dae::IdleState::OnEnter()
 {
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::RequestMovement);
+	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::LoadNextRound);
+	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::StartRound);
 }
 void dae::IdleState::Update(float const)
 {
 }
 void dae::IdleState::OnExit()
 {
+	dae::EventManager::GetInstance().RemoveObserver(this);
+	dae::EventManager::GetInstance().RemoveObserver(this);
 	dae::EventManager::GetInstance().RemoveObserver(this);
 }
 
@@ -64,20 +69,25 @@ void dae::IdleState::Notify(const Event& event)
 	{
 	case dae::EventType::RequestMovement:
 		{
-		auto& arguments{ std::get<0>(event.GetArgumentsAsTuple<const glm::vec3&>()) };
-		
-		TileCoordinates TilesDirection{static_cast<int>(arguments.x), static_cast<int>(arguments.y)};
+			if (m_AllowMovement)
+			{
+				auto& arguments{ std::get<0>(event.GetArgumentsAsTuple<const glm::vec3&>()) };		
+				TileCoordinates TilesDirection{static_cast<int>(arguments.x), static_cast<int>(arguments.y)};
+				auto coords = GetObject()->GetComponent<dae::QbertComponent>()->GetCoords();
 
-		auto coords = GetObject()->GetComponent<dae::QbertComponent>()->GetCoords();
+				std::tuple<TileCoordinates, TileCoordinates> eventArguments{ coords, TilesDirection };
+				Event eventToNotify{ dae::EventType::IsTileValid, eventArguments, -1 };
+				dae::EventManager::GetInstance().PushEvent(eventToNotify);
 
-		std::tuple<TileCoordinates, TileCoordinates> eventArguments{ coords, TilesDirection };
-
-		Event eventToNotify{ dae::EventType::IsTileValid, eventArguments, -1 };
-
-		dae::EventManager::GetInstance().PushEvent(eventToNotify);
-
-		GetObject()->GetComponent<dae::QbertComponent>()->SetState(std::make_unique<RequestingMovementState>(GetObject()));
+				GetObject()->GetComponent<dae::QbertComponent>()->SetState(std::make_unique<RequestingMovementState>(GetObject()));
+			}
 		}
+		break;
+	case dae::EventType::LoadNextRound:
+		m_AllowMovement = false;
+		break;
+	case dae::EventType::StartRound:
+		m_AllowMovement = true;
 		break;
 	}
 
@@ -189,8 +199,6 @@ dae::DeathState::DeathState(GameObject* object, float deathTimer)
 void dae::DeathState::OnEnter()
 {
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::GameOver);
-	auto counterComponent = GetObject()->GetComponent<dae::CounterComponent>();
-	counterComponent->DecreaseValue("Lives", 1);
 }
 void dae::DeathState::Update(float const deltaTime)
 {

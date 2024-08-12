@@ -50,7 +50,7 @@ void dae::TextComponent::Render() const
 			return;
 
 		const auto& pos = transformCpntOwner->GetPosition().GetPosition();
-		Renderer::GetInstance().RenderTexture(*m_textTexture, pos.x, pos.y);
+		Renderer::GetInstance().RenderTexture(*m_textTexture, pos.x, pos.y, static_cast<float>(m_textTexture->GetSize().x), static_cast<float>(m_textTexture->GetSize().y), dae::SourceRectangle(static_cast<float>(m_textTexture->GetSize().x), static_cast<float>(m_textTexture->GetSize().y), static_cast<float>(m_textTexture->GetSize().x), static_cast<float>(m_textTexture->GetSize().y), 0.0f, 0.0f));
 	}
 }
 

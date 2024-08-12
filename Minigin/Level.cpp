@@ -30,7 +30,7 @@ dae::LevelComponent::LevelComponent(GameObject* ownerObject, TileData tileData, 
 	}
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::IsTileValid);
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::ToggleTile);
-	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::LoadNextLevel);
+	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::LoadNextRound);
 }
 
 dae::SourceRectangle dae::LevelComponent::GetSourceRect(int column, int row) const
@@ -139,7 +139,7 @@ void dae::LevelComponent::Notify(const Event& event)
 			ToggleTile(pos.m_Column, pos.m_Row);		
 		}
 		break;
-	case EventType::LoadNextLevel:
+	case EventType::LoadNextRound:
 		{
 			auto arguments{ event.GetArgumentsAsTuple<bool>() };
 			if (std::get<0>(arguments))
@@ -190,9 +190,9 @@ void dae::LevelComponent::ToggleTile(int column, int row)
 
 		if (IsLevelFinished())
 		{
-			std::tuple<bool> eventArguments{ true };
-			Event eventToNotify{ dae::EventType::LoadNextLevel, eventArguments, -1 };
-			Notify(eventToNotify);
+			std::tuple<bool> eventArguments{ true }; //play animation = true
+			Event eventToNotify{ dae::EventType::LoadNextRound, eventArguments, -1 };
+			dae::EventManager::GetInstance().PushEvent(eventToNotify);
 		}
 	}
 }
@@ -211,8 +211,10 @@ void dae::LevelComponent::LoadNewRound()
 	CreateLevel();
 
 	Event eventToNotify{ dae::EventType::RespawnPlayer, std::tuple<>(), -1 };
-
 	dae::EventManager::GetInstance().PushEvent(eventToNotify);
+	Event eventToNotify2{ dae::EventType::StartRound, std::tuple<int, int>(m_LevelData.m_Level, m_LevelData.m_Round), -1 };
+	dae::EventManager::GetInstance().PushEvent(eventToNotify2);
+
 }
 
 bool dae::LevelComponent::IsLevelFinished()
@@ -233,7 +235,7 @@ bool dae::LevelComponent::IsLevelFinished()
 void dae::LevelComponent::PlayLevelDoneAnim(bool playAnim)
 {
 	m_PlayLevelDoneAnim = playAnim;
-	m_FlashCyclesCountdown = 16;
+	m_FlashCyclesCountdown = 18;
 }
 
 void dae::LevelComponent::HandleLevelFlashing()

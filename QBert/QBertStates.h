@@ -57,6 +57,8 @@ namespace dae
 		void OnExit() override;
 
 		void Notify(const Event& event) override;
+	private:
+		bool m_AllowMovement;
 	};
 
 	class DeathState : public State, public Observer

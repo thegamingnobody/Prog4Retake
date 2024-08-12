@@ -28,6 +28,10 @@ void dae::LevelLoader::ReadAndSaveLevel(std::string filePath)
 			{
 				input >> result.m_Round;
 			}
+			else if (tag == "Level")
+			{
+				input >> result.m_Level;
+			}
 			else if (tag == "Tileset")
 			{
 				input >> result.m_TileSet;

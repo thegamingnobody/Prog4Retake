@@ -31,11 +31,11 @@ void load()
 	auto& levelLoader = dae::LevelLoader::GetInstance();
 
 #pragma region standard
-	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
+	//auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 	auto go = std::make_shared<dae::GameObject>("Prog4 assignment text");
-	go->AddComponent<dae::TextComponent>("Programming 4 Assignment", font);
-	go->AddComponent<dae::TransformComponent>(80.0f, 20.0f);
-	scene.Add(go);
+	//go->AddComponent<dae::TextComponent>("Programming 4 Assignment", font);
+	//go->AddComponent<dae::TransformComponent>(80.0f, 20.0f);
+	//scene.Add(go);
 #pragma endregion
 
 #pragma region level
@@ -45,6 +45,8 @@ void load()
 		go = std::make_shared<dae::GameObject>("Level");
 
 		levelLoader.ReadAndSaveLevel("../Data/Level1.txt");
+		levelLoader.ReadAndSaveLevel("../Data/Level2.txt");
+		levelLoader.ReadAndSaveLevel("../Data/Level3.txt");
 
 		dae::RoundData currentLevel{ levelLoader.GetRound(1, 1) };
 
@@ -118,8 +120,8 @@ void load()
 		
 		go->AddComponent<dae::QbertComponent>(curseGo.get());
 
-		auto& counterComponent = go->AddComponent<dae::CounterComponent>();
-		counterComponent.AddCounter("Lives", dae::CounterTypes::Lives, 4, true);
+		//auto& counterComponent = go->AddComponent<dae::CounterComponent>();
+		//counterComponent.AddCounter("Lives", dae::CounterTypes::Lives, 4, true);
 
 		scene.Add(go);
 	}
@@ -128,11 +130,13 @@ void load()
 
 
 #pragma region HUD
+	auto MCFont = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 24);
+	
 	{
 		go = std::make_shared<dae::GameObject>("HUD Health", -1);
 		go->AddComponent<dae::TextureComponent>("Heart.png");
 		go->AddComponent<dae::TransformComponent>(	static_cast<float>(dae::Minigin::m_WindowWidth  * 0.10f),
-													static_cast<float>(dae::Minigin::m_WindowHeight * 0.15f));
+													static_cast<float>(dae::Minigin::m_WindowHeight * 0.20f));
 		go->AddComponent<dae::HUDComponent>(dae::HUDType::Lives);
 		scene.Add(go);
 	}
@@ -144,6 +148,26 @@ void load()
 		go->AddComponent<dae::TransformComponent>(	static_cast<float>(dae::Minigin::m_WindowWidth  * 0.50f) - (textureDimentions.x * 0.50f),
 													static_cast<float>(dae::Minigin::m_WindowHeight * 0.50f) - (textureDimentions.y * 0.50f));
 		go->AddComponent<dae::HUDComponent>(dae::HUDType::GameOver);
+		scene.Add(go);
+	}
+	
+	
+	{
+		go = std::make_shared<dae::GameObject>("HUD Level Count", -1);
+		//go->AddComponent<dae::TextureComponent>("Heart.png");
+		go->AddComponent<dae::TextComponent>("Level:", MCFont);
+		go->AddComponent<dae::TransformComponent>(	static_cast<float>(dae::Minigin::m_WindowWidth  * 0.80f),
+													static_cast<float>(dae::Minigin::m_WindowHeight * 0.15f));
+		go->AddComponent<dae::HUDComponent>(dae::HUDType::LevelCount);
+		scene.Add(go);
+	}
+	{
+		go = std::make_shared<dae::GameObject>("HUD Round Count", -1);
+		//go->AddComponent<dae::TextureComponent>("Heart.png");
+		go->AddComponent<dae::TextComponent>("Round:", MCFont);
+		go->AddComponent<dae::TransformComponent>(	static_cast<float>(dae::Minigin::m_WindowWidth  * 0.80f),
+													static_cast<float>(dae::Minigin::m_WindowHeight * 0.20f));
+		go->AddComponent<dae::HUDComponent>(dae::HUDType::RoundCount);
 		scene.Add(go);
 	}
 

@@ -10,6 +10,8 @@ namespace dae
     {
         Lives,
         GameOver,
+        LevelCount,
+        RoundCount,
     };
 
     class HUDComponent : public Component, public Observer
@@ -31,6 +33,8 @@ namespace dae
         int const m_StartingHealth;
         int m_CurrentHealth;
         glm::vec3 m_HealthStartPos;
+
+
     };
 }
 
