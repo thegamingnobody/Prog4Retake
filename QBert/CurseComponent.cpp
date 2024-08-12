@@ -15,6 +15,12 @@ dae::CurseComponent::CurseComponent(GameObject* object)
 
 }
 
+dae::CurseComponent::~CurseComponent()
+{
+	dae::EventManager::GetInstance().RemoveObserver(this);
+	dae::EventManager::GetInstance().RemoveObserver(this);
+}
+
 void dae::CurseComponent::Notify(const Event& event)
 {
 	switch (event.m_type)

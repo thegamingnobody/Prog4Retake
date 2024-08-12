@@ -28,9 +28,17 @@ dae::LevelComponent::LevelComponent(GameObject* ownerObject, TileData tileData, 
 	{
 		m_BasePosition = transformCpnt->GetPosition().GetPosition();
 	}
+
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::IsTileValid);
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::ToggleTile);
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::LoadNextRound);
+}
+
+dae::LevelComponent::~LevelComponent()
+{
+	dae::EventManager::GetInstance().RemoveObserver(this);
+	dae::EventManager::GetInstance().RemoveObserver(this);
+	dae::EventManager::GetInstance().RemoveObserver(this);
 }
 
 dae::SourceRectangle dae::LevelComponent::GetSourceRect(int column, int row) const

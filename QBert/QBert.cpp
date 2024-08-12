@@ -128,6 +128,25 @@ void load()
 
 #pragma endregion
 
+#pragma region Enemies
+	
+	{
+		//go = std::make_shared<dae::GameObject>("Player", -1);
+		//dae::SourceRectangle sourceRect = dae::SourceRectangle(64.0f, 16.0f, 16.0f, 16.0f, 48.0f, 0.0f);
+
+		//auto& textureComponent = go->AddComponent<dae::TextureComponent>("Qbert1.png", sourceRect, globalZoom);
+		//auto textureDimentions = textureComponent.GetSize();
+
+		//go->AddComponent<dae::TransformComponent>(	static_cast<float>(dae::Minigin::m_WindowWidth  * 0.50f) - (textureDimentions.x * 0.00f),
+		//											static_cast<float>(dae::Minigin::m_WindowHeight * 0.25f) - (textureDimentions.y * 1.50f));
+		
+		//go->AddComponent<dae::QbertComponent>(curseGo.get());
+
+		//scene.Add(go);
+	}
+
+#pragma endregion
+
 
 #pragma region HUD
 	auto MCFont = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 24);

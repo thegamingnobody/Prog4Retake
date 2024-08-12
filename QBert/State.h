@@ -28,6 +28,18 @@ namespace dae
 		GameObject* m_pObjectOfState{};
 
 	};
+
+	class NullState : public State
+	{
+	public:
+		NullState(GameObject* object) : State(object) {}
+
+		void OnEnter() override {}
+		void Update(float const) override {}
+		void OnExit() override {}
+
+	};
+
 }
 
 #endif 

@@ -25,14 +25,14 @@ void dae::JumpingState::Update(float const deltaTime)
 
 	std::tuple<glm::vec3, bool, float> eventArguments{ (m_Direction / m_MaxJumpTime) * deltaTime, false, m_MaxJumpTime };
 
-	Event eventToNotify{ dae::EventType::MoveObject, eventArguments, -1 };
 	auto object{ GetObject() };
+	Event eventToNotify{ dae::EventType::MoveObject, eventArguments, object->GetObjectID()};
 	object->NotifyComponents(eventToNotify);
 
 	if (m_AccumulatedTime >= m_MaxJumpTime)
 	{
 		std::tuple<dae::TileCoordinates, bool> eventArguments2{ dae::TileCoordinates(static_cast<int>(m_Direction.x), static_cast<int>(m_Direction.y)), m_IsTileValid };
-		Event eventToNotify2{ dae::EventType::MoveFinished, eventArguments2, -1 };
+		Event eventToNotify2{ dae::EventType::MoveFinished, eventArguments2, object->GetObjectID() };
 		dae::EventManager::GetInstance().PushEvent(eventToNotify2);
 		GetObject()->GetComponent<dae::QbertComponent>()->SetState(std::make_unique<FinishMovementState>(GetObject()));
 	}
@@ -102,7 +102,7 @@ void dae::RequestingMovementState::OnEnter()
 {
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::ConfirmMovement);
 }
-void dae::RequestingMovementState::Update(float const /*deltaTime*/)
+void dae::RequestingMovementState::Update(float const)
 {
 }
 void dae::RequestingMovementState::OnExit()
@@ -139,7 +139,7 @@ void dae::FinishMovementState::OnEnter()
 {
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::MoveFinished);
 }
-void dae::FinishMovementState::Update(float const /*deltaTime*/)
+void dae::FinishMovementState::Update(float const)
 {
 }
 void dae::FinishMovementState::OnExit()

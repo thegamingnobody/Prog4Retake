@@ -11,6 +11,8 @@ namespace dae
 	public:
 		TransformComponent(dae::GameObject* object, float x = 0, float y = 0);
 
+		virtual ~TransformComponent();
+
 		void Update(float const deltaTime) override;
 
 		const Transform& GetPosition(); //calculates current world pos

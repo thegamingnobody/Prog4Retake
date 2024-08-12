@@ -13,6 +13,8 @@ dae::QbertComponent::QbertComponent(GameObject* object, GameObject* curseObject,
 {
 	m_TargetNumber = object->GetObjectID();
 
+
+	SetState(std::make_unique<dae::NullState>(GetOwner()));
 	SetState(std::make_unique<dae::IdleState>(GetOwner()));
 
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::ConfirmMovement);
@@ -23,6 +25,13 @@ dae::QbertComponent::QbertComponent(GameObject* object, GameObject* curseObject,
 void dae::QbertComponent::Update(float const deltaTime)
 {
 	m_PlayerState->Update(deltaTime);
+}
+
+dae::QbertComponent::~QbertComponent()
+{
+	dae::EventManager::GetInstance().RemoveObserver(this);
+	dae::EventManager::GetInstance().RemoveObserver(this);
+	dae::EventManager::GetInstance().RemoveObserver(this);
 }
 
 void dae::QbertComponent::Notify(const Event& event)

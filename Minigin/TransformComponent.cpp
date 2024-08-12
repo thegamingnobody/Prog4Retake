@@ -17,6 +17,12 @@ dae::TransformComponent::TransformComponent(dae::GameObject* object, float const
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::MoveObjectTo);
 }
 
+dae::TransformComponent::~TransformComponent()
+{
+	dae::EventManager::GetInstance().RemoveObserver(this);
+	dae::EventManager::GetInstance().RemoveObserver(this);
+}
+
 void dae::TransformComponent::Update(float const deltaTime)
 {
 	if (m_IsMoving)

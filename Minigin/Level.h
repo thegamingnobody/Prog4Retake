@@ -16,7 +16,7 @@ namespace dae
 	public:
 		LevelComponent(GameObject* ownerObject, TileData tileData, RoundData levelData);
 
-		virtual ~LevelComponent() = default;
+		virtual ~LevelComponent();
 		LevelComponent(const LevelComponent& other) = delete;
 		LevelComponent(LevelComponent&& other) = delete;
 		LevelComponent& operator=(const LevelComponent& other) = delete;

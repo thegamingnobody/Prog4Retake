@@ -17,6 +17,11 @@ dae::HUDComponent::HUDComponent(dae::GameObject* object, dae::HUDType HUDType)
 	SubscribeToEvents();
 }
 
+dae::HUDComponent::~HUDComponent()
+{
+	dae::EventManager::GetInstance().RemoveObserver(this);
+}
+
 void dae::HUDComponent::Render() const
 {
 	auto transformCpnt	= GetOwner()->GetComponent<dae::TransformComponent>();

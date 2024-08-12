@@ -19,6 +19,7 @@ namespace dae
     public:
 
         HUDComponent(dae::GameObject* object, dae::HUDType HUDType);
+        virtual ~HUDComponent();
 
         void Render() const override;
 

@@ -39,9 +39,6 @@
     <ClCompile Include="QBert.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Minigin\Level.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Minigin\Command.cpp">
       <Filter>Source Files\Commands</Filter>
     </ClCompile>
@@ -69,17 +66,17 @@
     <ClCompile Include="MuteCommand.cpp">
       <Filter>Source Files\Commands</Filter>
     </ClCompile>
+    <ClCompile Include="..\Minigin\Level.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
     <ClCompile Include="CountersComponent.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="HUDComponent.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Minigin\Level.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Minigin\Command.h">
       <Filter>Header Files\Commands</Filter>
     </ClInclude>
@@ -122,11 +119,14 @@
     <ClInclude Include="MuteCommand.h">
       <Filter>Header Files\Commands</Filter>
     </ClInclude>
+    <ClInclude Include="..\Minigin\Level.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
     <ClInclude Include="CountersComponent.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="HUDComponent.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

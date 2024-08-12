@@ -13,7 +13,7 @@ namespace dae
 
         void Update(float const deltaTime) override;
 
-        virtual ~QbertComponent() = default;
+        virtual ~QbertComponent();
         QbertComponent(const QbertComponent& other) = delete;
         QbertComponent(QbertComponent&& other) = delete;
         QbertComponent& operator=(const QbertComponent& other) = delete;

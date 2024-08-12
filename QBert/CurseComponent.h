@@ -9,7 +9,7 @@ namespace dae
 	public:
         CurseComponent(GameObject* object);
 
-        virtual ~CurseComponent() = default;
+        virtual ~CurseComponent();
         CurseComponent(const CurseComponent& other) = delete;
         CurseComponent(CurseComponent&& other) = delete;
         CurseComponent& operator=(const CurseComponent& other) = delete;
