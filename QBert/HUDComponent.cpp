@@ -85,11 +85,9 @@ void dae::HUDComponent::Notify(const Event& event)
 	case dae::EventType::StartRound:
 		{
 			auto textCpnt = GetOwner()->GetComponent<dae::TextComponent>();	
-			auto transformCpnt = GetOwner()->GetComponent<dae::TransformComponent>();
 			auto arguments = event.GetArgumentsAsTuple<int, int>();
 
 			assert(textCpnt != nullptr);
-			assert(transformCpnt != nullptr);
 
 			switch (m_HUDType)
 			{

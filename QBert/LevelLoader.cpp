@@ -64,11 +64,11 @@ dae::RoundData dae::LevelLoader::GetRound(int level, int round)
 dae::RoundData dae::LevelLoader::GetNextRound(int level, int round)
 {
 	assert(level > 0 and round > 0);
-	assert(level <= m_Levels.size());
+	assert(level <= static_cast<int>(m_Levels.size()));
 
-	if (round == m_Levels[level-1].size())
+	if (round == static_cast<int>(m_Levels[level - 1].size()))
 	{
-		if (level == m_Levels.size())
+		if (level == static_cast<int>(m_Levels.size()))
 		{
 			return GetRound(level, round);
 		}

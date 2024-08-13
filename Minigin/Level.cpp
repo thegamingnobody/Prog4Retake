@@ -54,8 +54,8 @@ dae::LevelComponent::~LevelComponent()
 
 dae::SourceRectangle dae::LevelComponent::GetSourceRect(int column, int row) const
 {
-	assert(m_Level.size() - 1 >= column);
-	assert(m_Level[column].size() - 1 >= row);
+	assert(static_cast<int>(m_Level.size()) - 1 >= column);
+	assert(static_cast<int>(m_Level[column].size()) - 1 >= row);
 
 	int tileID{ m_Level[column][row] };
 	
@@ -120,9 +120,9 @@ void dae::LevelComponent::Render() const
 	float const tileSize{ m_TileSide * textureCpnt->GetRenderScale() };
 
 
-	for (int column = 0; column < m_Level.size(); column++)
+	for (int column = 0; column < static_cast<int>(m_Level.size()); column++)
 	{
-		for (int row = 0; row < m_Level[column].size(); row++)
+		for (int row = 0; row < static_cast<int>(m_Level[column].size()); row++)
 		{
 			dae::SourceRectangle srcRect = GetSourceRect(column, row);
 			textureCpnt->SetSourceRectangle(srcRect);
@@ -134,9 +134,9 @@ void dae::LevelComponent::Render() const
 
 bool dae::LevelComponent::DoesTileExist(int column, int row)
 {
-	if (m_Level.size() <= column or column < 0) return false;
+	if (static_cast<int>(m_Level.size()) <= column or column < 0) return false;
 
-	if (m_Level[column].size() <= row or row < 0) return false;
+	if (static_cast<int>(m_Level[column].size()) <= row or row < 0) return false;
 
 	return true;
 }
@@ -235,7 +235,7 @@ void dae::LevelComponent::LoadNewRound()
 	auto newRound{ LevelLoader::GetInstance().GetNextRound(m_LevelData.m_Level, m_LevelData.m_Round) };
 	m_LevelData = newRound;
 
-	for (int i = 0; i < m_Level.size(); i++)
+	for (int i = 0; i < static_cast<int>(m_Level.size()); i++)
 	{
 		m_Level[i].clear();
 	}
@@ -256,9 +256,9 @@ bool dae::LevelComponent::IsLevelFinished()
 {
 	int targetID{ (m_LevelData.m_TileSet * 3) + m_LevelData.m_MaxToggles };
 
-	for (int  column = 0; column < m_Level.size(); column++)
+	for (int column = 0; column < static_cast<int>(m_Level.size()); column++)
 	{
-		for (int row = 0; row < m_Level[column].size(); row++)
+		for (int row = 0; row < static_cast<int>(m_Level[column].size()); row++)
 		{
 			if (m_Level[column][row] != targetID) return false;
 		}
@@ -287,9 +287,9 @@ void dae::LevelComponent::HandleLevelFlashing()
 		}
 		else
 		{
-			for (int column = 0; column < m_Level.size(); column++)
+			for (int column = 0; column < static_cast<int>(m_Level.size()); column++)
 			{
-				for (int row = 0; row < m_Level[column].size(); row++)
+				for (int row = 0; row < static_cast<int>(m_Level[column].size()); row++)
 				{
 					m_Level[column][row] = (((m_Level[column][row] + 1) % 3) + (m_LevelData.m_TileSet * 3));
 				}

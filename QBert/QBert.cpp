@@ -2,7 +2,7 @@
 
 #if _DEBUG
 #if __has_include(<vld.h>)
-//#include <vld.h>
+#include <vld.h>
 #endif
 #endif
 
@@ -21,7 +21,7 @@ void load()
 
 	std::vector<std::string> m_SoundfilePaths{ "../Data/Sounds/QBert Jump.wav", "../Data/Sounds/Round Complete Tune.wav", "../Data/Sounds/Swearing.wav", "../Data/Sounds/Coily Egg Jump.wav" };
 
-	for (int soundIndex = 0; soundIndex < m_SoundfilePaths.size(); soundIndex++)
+	for (int soundIndex = 0; soundIndex < static_cast<int>(m_SoundfilePaths.size()); soundIndex++)
 	{
 		dae::ServiceLocator::GetSoundSystem().AddSound(m_SoundfilePaths[soundIndex]);
 	}

@@ -10,6 +10,7 @@ dae::QbertComponent::QbertComponent(GameObject* object, GameObject* curseObject,
 	: Component(object)
 	, m_Coordinates(startColumn, startRow)
 	, m_CurseObject(curseObject)
+	, m_Died(false)
 {
 	m_TargetNumber = object->GetObjectID();
 
@@ -21,6 +22,7 @@ dae::QbertComponent::QbertComponent(GameObject* object, GameObject* curseObject,
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::RespawnPlayer);
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::GameOver);
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::PlayerCoilyCollision);
+	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::PlayerMoveFinished);
 }
 
 void dae::QbertComponent::Update(float const deltaTime)
@@ -73,6 +75,7 @@ void dae::QbertComponent::Notify(const Event& event)
 			}
 			m_Coordinates.m_Row = 0;
 			m_Coordinates.m_Column = 0;
+			m_Died = false;
 		}
 		break;
 	case dae::EventType::PlayerCoilyCollision:
@@ -81,7 +84,13 @@ void dae::QbertComponent::Notify(const Event& event)
 			Event eventToNotify{ dae::EventType::PlayerDied, eventArguments, -1 };
 
 			dae::EventManager::GetInstance().PushEvent(eventToNotify);
+			m_Died = true;
 
+		}
+		break;
+	case dae::EventType::PlayerMoveFinished:
+		if (m_Died)
+		{
 			SetState(std::make_unique<DeathState>(GetOwner(), 1.0f), true);
 		}
 		break;

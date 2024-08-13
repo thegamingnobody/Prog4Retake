@@ -33,6 +33,8 @@ namespace dae
         GameObject* m_CurseObject;
 
         std::unique_ptr<State> m_PlayerState;
+
+        bool m_Died;
     };
 }
 
