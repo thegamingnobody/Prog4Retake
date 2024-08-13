@@ -2,6 +2,7 @@
 #include "GameObject.h"
 
 #include <algorithm>
+#include <numeric>
 
 using namespace dae;
 
@@ -28,9 +29,20 @@ void Scene::RemoveAll()
 
 void Scene::Update(float const deltaTime)
 {
+	bool shouldRemove{ false };
+
 	for(auto& object : m_objects)
 	{
 		object->Update(deltaTime);
+		if (object->ShouldRemove())
+		{
+			shouldRemove = true;
+		}
+	}
+
+	if (shouldRemove)
+	{
+		std::erase_if(m_objects, [](std::shared_ptr<GameObject> object) { return object->ShouldRemove(); });
 	}
 }
 

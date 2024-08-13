@@ -74,6 +74,10 @@ namespace dae
 
 		void NotifyComponents(const Event& event);
 
+		void Remove() { m_ShouldRemove = true; }
+		bool ShouldRemove() const { return m_ShouldRemove; }
+
+
 	private:
 		std::string const m_ObjectName;
 
@@ -83,5 +87,7 @@ namespace dae
 		std::vector<std::shared_ptr<Component>> m_pComponents{};
 
 		int m_PlayerNumber;
+
+		bool m_ShouldRemove;
 	};
 }

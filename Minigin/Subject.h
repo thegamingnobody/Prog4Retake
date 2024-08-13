@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 #include "Event.h"
+#include <numeric>
 
 namespace dae
 {
@@ -23,15 +24,19 @@ namespace dae
 
 		void RemoveObserver(Observer* observer)
 		{
-			auto removedObserverIt{ std::remove_if(m_Observers.begin(), m_Observers.end(), [observer](const std::pair<const EventType, Observer*>& pair)
+			std::erase_if(m_Observers, [observer](const std::pair<const EventType, Observer*>& pair)
 				{
 					return pair.second == observer;
-				})};
+				});
+			//auto removedObserverIt{ std::erase_if(m_Observers, [observer](const std::pair<const EventType, Observer*>& pair)
+			//	{
+			//		return pair.second == observer;
+			//	})};
 
-			if (removedObserverIt != m_Observers.end())
-			{
-				m_Observers.erase(removedObserverIt);
-			}
+			//if (removedObserverIt != m_Observers.end())
+			//{
+			//	m_Observers.erase(removedObserverIt);
+			//}
 		}
 
 		void NotifyObservers(const Event& event)

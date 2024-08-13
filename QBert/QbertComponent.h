@@ -1,7 +1,9 @@
-#pragma once
-#include <Component.h>
-#include <Observer.h>
-#include "Level.h"
+#ifndef QBERTCOMPONENT
+#define QBERTCOMPONENT
+
+//#include "Level.h"
+#include "Observer.h"
+#include "Component.h"
 #include "QBertStates.h"
 
 namespace dae
@@ -33,3 +35,5 @@ namespace dae
         std::unique_ptr<State> m_PlayerState;
     };
 }
+
+#endif

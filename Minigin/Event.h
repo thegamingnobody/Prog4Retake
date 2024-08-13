@@ -16,6 +16,7 @@ namespace dae
 		ConfirmMovement,
 		MoveObjectTo,
 		MoveFinished,
+		PlayerMoveFinished,
 
 		ToggleTile,
 
@@ -30,6 +31,10 @@ namespace dae
 		LoadNextRound,
 		GameOver,
 		StartRound,
+
+		CoilyDied,
+
+		PlayerCoilyCollision,
 	};
 
 	struct Event

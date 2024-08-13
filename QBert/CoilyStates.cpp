@@ -62,7 +62,7 @@ void dae::CoilyIdleState::Update(float const deltaTime)
 {
 	m_AccumulatedTime += deltaTime;
 
-	if (m_AccumulatedTime >= 0.5f)
+	if (m_AccumulatedTime >= 2.0f)
 	{
 		int directionID{ CalculateNextDirectionID() };
 
@@ -246,17 +246,6 @@ void dae::CoilyFinishMovementState::Notify(const Event& event)
 		}
 		else
 		{
-			auto transformCpnt = GetObject()->GetComponent<dae::TransformComponent>();
-			if (transformCpnt)
-			{
-				std::tuple<dae::Transform> eventArguments{ transformCpnt->GetPosition() };
-
-				Event eventToNotify{ dae::EventType::PlayerDied, eventArguments, -1 };
-
-				dae::EventManager::GetInstance().PushEvent(eventToNotify);
-				//GetObject()->GetComponent<dae::CoilyComponent>()->SetState(std::make_unique<DeathState>(GetObject(), 1.0f));
-				break;
-			}
 		}
 	}
 	break;

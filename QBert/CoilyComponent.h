@@ -47,6 +47,8 @@ namespace dae
 
         dae::QbertComponent& m_PlayerComponent;
         TileCoordinates m_PlayerCoordinates;
+
+        bool m_CollisionEventSent;
     };
 }
 

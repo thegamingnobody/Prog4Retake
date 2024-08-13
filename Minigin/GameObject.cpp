@@ -11,6 +11,7 @@ dae::GameObject::GameObject(const std::string& ObjectName, int const playerNumbe
 	, m_pChildObjects()
 	, m_pComponents()
 	, m_PlayerNumber(playerNumber)
+	, m_ShouldRemove(false)
 {
 }
 

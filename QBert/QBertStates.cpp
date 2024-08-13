@@ -32,7 +32,7 @@ void dae::JumpingState::Update(float const deltaTime)
 	if (m_AccumulatedTime >= m_MaxJumpTime)
 	{
 		std::tuple<dae::TileCoordinates, bool> eventArguments2{ dae::TileCoordinates(static_cast<int>(m_Direction.x), static_cast<int>(m_Direction.y)), m_IsTileValid };
-		Event eventToNotify2{ dae::EventType::MoveFinished, eventArguments2, object->GetObjectID() };
+		Event eventToNotify2{ dae::EventType::PlayerMoveFinished, eventArguments2, object->GetObjectID() };
 		dae::EventManager::GetInstance().PushEvent(eventToNotify2);
 		GetObject()->GetComponent<dae::QbertComponent>()->SetState(std::make_unique<FinishMovementState>(GetObject()));
 	}
@@ -140,7 +140,7 @@ dae::FinishMovementState::FinishMovementState(GameObject* object)
 
 void dae::FinishMovementState::OnEnter()
 {
-	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::MoveFinished);
+	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::PlayerMoveFinished);
 }
 void dae::FinishMovementState::Update(float const)
 {
@@ -154,7 +154,7 @@ void dae::FinishMovementState::Notify(const Event& event)
 {
 	switch (event.m_type)
 	{
-	case dae::EventType::MoveFinished:
+	case dae::EventType::PlayerMoveFinished:
 		{
 			//play jumping sound
 			dae::ServiceLocator::GetSoundSystem().PlaySound(SoundId(SFX::QBertJump));

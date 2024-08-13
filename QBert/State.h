@@ -1,7 +1,7 @@
 #ifndef DAE_STATE
 #define DAE_STATE
 
-#include <Component.h>
+#include "Component.h"
 
 namespace dae
 {

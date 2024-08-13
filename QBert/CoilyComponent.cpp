@@ -1,6 +1,9 @@
 #include "CoilyComponent.h"
 #include "GameObject.h"
 #include <EventManager.h>
+#include <TransformComponent.h>
+#include <SceneManager.h>
+#include <Scene.h>
 
 dae::CoilyComponent::CoilyComponent(GameObject* object, dae::QbertComponent& playerComponent, int startColumn, int startRow)
 	: Component(object)
@@ -8,6 +11,7 @@ dae::CoilyComponent::CoilyComponent(GameObject* object, dae::QbertComponent& pla
 	, m_CoilyForm(dae::CoilyComponent::CoilyForm::Egg)
 	, m_PlayerComponent(playerComponent)
 	, m_PlayerCoordinates(0, 0)
+	, m_CollisionEventSent(false)
 {
 	m_TargetNumber = object->GetObjectID();
 
@@ -17,18 +21,37 @@ dae::CoilyComponent::CoilyComponent(GameObject* object, dae::QbertComponent& pla
 	m_PlayerCoordinates = m_PlayerComponent.GetCoords();
 
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::ConfirmMovement);
-	//dae::EventManager::GetInstance().AddObserver(this, dae::EventType::RespawnPlayer);
-	//dae::EventManager::GetInstance().AddObserver(this, dae::EventType::GameOver);
+	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::PlayerDied);
+	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::RespawnPlayer);
+	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::GameOver);
 }
 
 void dae::CoilyComponent::Update(float const deltaTime)
 {
 	m_PlayerCoordinates = m_PlayerComponent.GetCoords();
 	m_CoilyState->Update(deltaTime);
+
+	if (m_PlayerCoordinates == m_Coordinates)
+	{
+		if (not m_CollisionEventSent)
+		{
+			Event eventToNotify{ dae::EventType::PlayerCoilyCollision, std::tuple<>(), -1 };
+			dae::EventManager::GetInstance().PushEvent(eventToNotify);
+			m_CollisionEventSent = true;
+		}
+		else
+		{
+			m_CollisionEventSent = false;
+		}
+
+	}
 }
 
 dae::CoilyComponent::~CoilyComponent()
 {
+	dae::EventManager::GetInstance().RemoveObserver(this);
+	dae::EventManager::GetInstance().RemoveObserver(this);
+	dae::EventManager::GetInstance().RemoveObserver(this);
 	dae::EventManager::GetInstance().RemoveObserver(this);
 }
 
@@ -46,29 +69,13 @@ void dae::CoilyComponent::Notify(const Event& event)
 		{
 			m_Coordinates.m_Row += originalDirection.m_Row;
 			m_Coordinates.m_Column += originalDirection.m_Column;
-			std::cout << "New coords coily: \n   row: " << m_Coordinates.m_Row << "\ncolumn: " << m_Coordinates.m_Column << "\n";
 		}
 		break;
 	}
+	case dae::EventType::PlayerDied:
 	case dae::EventType::RespawnPlayer:
-
-		glm::vec3 coords{ static_cast<int>(m_Coordinates.m_Row), static_cast<int>(m_Coordinates.m_Column), 0.0f };
-
-		//bad magic numbers and copied code from level component
-		coords = glm::vec3(-(coords.x * 0.50f) + (coords.y * 0.50f), (coords.x * 0.75f) + (coords.y * 0.75f), 0);
-		coords *= 32.0f * 2.0f;
-
-		coords.x = -(coords.x);
-		coords.y = -(coords.y);
-
-		std::tuple<glm::vec3, bool, float> eventArguments{ coords, false, 0.0f };
-
-		Event eventToNotify{ dae::EventType::MoveObject, eventArguments, -1 };
-		auto owner{ GetOwner() };
-		owner->NotifyComponents(eventToNotify);
-
-		m_Coordinates.m_Row = 0;
-		m_Coordinates.m_Column = 0;
+	case dae::EventType::GameOver:
+		GetOwner()->Remove();
 		break;
 	}
 }

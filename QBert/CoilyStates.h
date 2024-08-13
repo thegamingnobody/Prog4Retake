@@ -64,7 +64,6 @@ namespace dae
 
 		std::vector<glm::vec3> m_Directions;
 	};
-
 }
 
 

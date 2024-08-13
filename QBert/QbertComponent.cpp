@@ -20,6 +20,7 @@ dae::QbertComponent::QbertComponent(GameObject* object, GameObject* curseObject,
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::ConfirmMovement);
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::RespawnPlayer);
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::GameOver);
+	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::PlayerCoilyCollision);
 }
 
 void dae::QbertComponent::Update(float const deltaTime)
@@ -29,6 +30,7 @@ void dae::QbertComponent::Update(float const deltaTime)
 
 dae::QbertComponent::~QbertComponent()
 {
+	dae::EventManager::GetInstance().RemoveObserver(this);
 	dae::EventManager::GetInstance().RemoveObserver(this);
 	dae::EventManager::GetInstance().RemoveObserver(this);
 	dae::EventManager::GetInstance().RemoveObserver(this);
@@ -50,27 +52,38 @@ void dae::QbertComponent::Notify(const Event& event)
 		break;
 	}
 	case dae::EventType::RespawnPlayer:
+		{
+			if (m_Coordinates.m_Row != 0 and m_Coordinates.m_Column != 0)
+			{
+				glm::vec3 coords{ static_cast<int>(m_Coordinates.m_Row), static_cast<int>(m_Coordinates.m_Column), 0.0f };
 
-		glm::vec3 coords{ static_cast<int>(m_Coordinates.m_Row), static_cast<int>(m_Coordinates.m_Column), 0.0f };
+				//bad magic numbers and copied code from level component
+				coords = glm::vec3(-(coords.x * 0.50f) + (coords.y * 0.50f), (coords.x * 0.75f) + (coords.y * 0.75f), 0);
+				coords *= 32.0f * 2.0f;
 
+				coords.x = -(coords.x);
+				coords.y = -(coords.y);
 
-		//bad magic numbers and copied code from level component
-		coords = glm::vec3(-(coords.x * 0.50f) + (coords.y * 0.50f), (coords.x * 0.75f) + (coords.y * 0.75f), 0);
-		coords *= 32.0f * 2.0f;
+				std::tuple<glm::vec3, bool, float> eventArguments{ coords, false, 0.0f };
 
-		coords.x = -(coords.x);
-		coords.y = -(coords.y);
+				Event eventToNotify{ dae::EventType::MoveObject, eventArguments, -1 };
+				auto owner{ GetOwner() };
+				owner->NotifyComponents(eventToNotify);
 
-		std::tuple<glm::vec3, bool, float> eventArguments{ coords, false, 0.0f };
+			}
+			m_Coordinates.m_Row = 0;
+			m_Coordinates.m_Column = 0;
+		}
+		break;
+	case dae::EventType::PlayerCoilyCollision:
+		{
+			std::tuple<dae::Transform> eventArguments{ GetOwner()->GetComponent<dae::TransformComponent>()->GetPosition() };
+			Event eventToNotify{ dae::EventType::PlayerDied, eventArguments, -1 };
 
-		Event eventToNotify{ dae::EventType::MoveObject, eventArguments, -1 };
-		auto owner{ GetOwner() };
-		owner->NotifyComponents(eventToNotify);
+			dae::EventManager::GetInstance().PushEvent(eventToNotify);
 
-		m_Coordinates.m_Row = 0;
-		m_Coordinates.m_Column = 0;
-
-
+			SetState(std::make_unique<DeathState>(GetOwner(), 1.0f), true);
+		}
 		break;
 	}
 }

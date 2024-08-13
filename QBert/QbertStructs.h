@@ -10,6 +10,7 @@ namespace dae
 
 		TileCoordinates operator-(const TileCoordinates& other) const;
 		TileCoordinates operator+(const TileCoordinates& other) const;
+		bool operator==(const TileCoordinates& other) const;
 
 		int m_Column;
 		int m_Row;

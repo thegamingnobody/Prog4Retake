@@ -7,14 +7,17 @@
 #include "TextureComponent.h"
 #include "Observer.h"
 #include "../QBert/QbertStructs.h"
+#include "../QBert/QbertComponent.h"
 
 
 namespace dae
 {
+	class QbertComponent;
+
 	class LevelComponent final : public Component, public Observer
 	{
 	public:
-		LevelComponent(GameObject* ownerObject, TileData tileData, RoundData levelData);
+		LevelComponent(GameObject* ownerObject, TileData tileData, RoundData levelData, QbertComponent& playerComponent);
 
 		virtual ~LevelComponent();
 		LevelComponent(const LevelComponent& other) = delete;
@@ -41,6 +44,8 @@ namespace dae
 
 		void LoadNewRound();
 
+		void SpawnCoily();
+
 	private:
 		bool IsLevelFinished();
 
@@ -53,13 +58,16 @@ namespace dae
 		float const m_ZoomLevel;
 
 		RoundData m_LevelData;
-		//int m_TileSet;
-		//int const m_MaxTileToggles;
 
 		bool m_PlayLevelDoneAnim;
 		float m_AcumulatedTime;
 		float m_FlashCycleTime;
 		int m_FlashCyclesCountdown;
+
+		int m_NextEnemyID;
+		QbertComponent& m_PlayerComponent;
+		float m_CoilySpawnTimer;
+		bool m_CanSpawnCoily;
 	};
 }
 

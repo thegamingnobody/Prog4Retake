@@ -14,6 +14,8 @@ namespace dae
 
 		void Update(float const deltaTime);
 		void Render();
+
+		Scene* GetScene() { return m_scenes[0].get(); }
 	private:
 		friend class Singleton<SceneManager>;
 		SceneManager() = default;

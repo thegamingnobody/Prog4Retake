@@ -7,9 +7,13 @@
 #include "../QBert/LevelLoader.h"
 #include <ServiceLocator.h>
 #include "../QBert/SFXEnum.h"
+#include <Minigin.h>
+#include "../QBert/CoilyComponent.h"
+#include <SceneManager.h>
+#include <Scene.h>
 
 
-dae::LevelComponent::LevelComponent(GameObject* ownerObject, TileData tileData, RoundData levelData)
+dae::LevelComponent::LevelComponent(GameObject* ownerObject, TileData tileData, RoundData levelData, dae::QbertComponent& playerComponent)
 	: Component(ownerObject)
 	, m_Level()
 	, m_BasePosition()
@@ -19,6 +23,10 @@ dae::LevelComponent::LevelComponent(GameObject* ownerObject, TileData tileData, 
 	, m_PlayLevelDoneAnim(false)
 	, m_AcumulatedTime(0.00f)
 	, m_FlashCycleTime(0.10f)
+	, m_NextEnemyID(2)
+	, m_PlayerComponent(playerComponent)
+	, m_CoilySpawnTimer(0.0f)
+	, m_CanSpawnCoily(true)
 {
 	CreateLevel();
 	m_TargetNumber = ownerObject->GetObjectID();
@@ -32,10 +40,13 @@ dae::LevelComponent::LevelComponent(GameObject* ownerObject, TileData tileData, 
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::IsTileValid);
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::ToggleTile);
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::LoadNextRound);
+	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::CoilyDied);
+	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::RespawnPlayer);
 }
 
 dae::LevelComponent::~LevelComponent()
 {
+	dae::EventManager::GetInstance().RemoveObserver(this);
 	dae::EventManager::GetInstance().RemoveObserver(this);
 	dae::EventManager::GetInstance().RemoveObserver(this);
 	dae::EventManager::GetInstance().RemoveObserver(this);
@@ -86,6 +97,14 @@ void dae::LevelComponent::Update(float const deltaTime)
 		m_AcumulatedTime += deltaTime;
 
 		HandleLevelFlashing();
+	}
+
+	m_CoilySpawnTimer += deltaTime;
+
+	if (m_CoilySpawnTimer >= 5.0f and m_CanSpawnCoily)
+	{
+		SpawnCoily();
+		m_CanSpawnCoily = false;
 	}
 }
 
@@ -162,6 +181,11 @@ void dae::LevelComponent::Notify(const Event& event)
 			}
 		}
 		break;
+	case EventType::CoilyDied:
+	case EventType::RespawnPlayer:
+		m_CanSpawnCoily = true;
+		m_CoilySpawnTimer = 0.0f;
+		break;
 	}
 }
 
@@ -223,6 +247,8 @@ void dae::LevelComponent::LoadNewRound()
 	dae::EventManager::GetInstance().PushEvent(eventToNotify);
 	Event eventToNotify2{ dae::EventType::StartRound, std::tuple<int, int>(m_LevelData.m_Level, m_LevelData.m_Round), -1 };
 	dae::EventManager::GetInstance().PushEvent(eventToNotify2);
+	m_CanSpawnCoily = true;
+	m_CoilySpawnTimer = 0.0f;
 
 }
 
@@ -270,4 +296,25 @@ void dae::LevelComponent::HandleLevelFlashing()
 			}
 		}
 	}
+}
+
+void dae::LevelComponent::SpawnCoily()
+{
+	auto go = std::make_shared<dae::GameObject>("Coily", m_NextEnemyID++);
+	dae::SourceRectangle sourceRect = dae::SourceRectangle(160.0f, 32.0f, 16.0f, 32.0f, 16.0f, 0.0f);
+
+	auto& textureComponent = go->AddComponent<dae::TextureComponent>("Coily.png", sourceRect, m_ZoomLevel);
+	auto textureDimentions = textureComponent.GetSize();
+
+	auto startPos = ConvertToWorld(1, 0);
+
+	go->AddComponent<dae::TransformComponent>(m_BasePosition.x - startPos.x + (textureDimentions.x * 0.10f), m_BasePosition.y + startPos.y - (textureDimentions.y * 1.10f));
+
+	//go->AddComponent<dae::TransformComponent>(	static_cast<float>(dae::Minigin::m_WindowWidth  * 0.50f) - (textureDimentions.x * 0.00f),
+	//											static_cast<float>(dae::Minigin::m_WindowHeight * 0.25f) - (textureDimentions.y * 1.60f));
+
+	go->AddComponent<dae::CoilyComponent>(m_PlayerComponent, 0, 1);
+
+	dae::SceneManager::GetInstance().GetScene()->Add(go);
+
 }
