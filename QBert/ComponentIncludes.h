@@ -9,3 +9,4 @@
 #include "CurseComponent.h"
 #include "CountersComponent.h"
 #include "HUDComponent.h"
+#include "CoilyComponent.h"

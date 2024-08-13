@@ -128,13 +128,14 @@ void dae::LevelComponent::Notify(const Event& event)
 	{
 	case EventType::IsTileValid:
 		{
-			auto arguments{ event.GetArgumentsAsTuple<dae::TileCoordinates, dae::TileCoordinates>() };
-			auto pos	{ std::get<0>(arguments) };
-			auto direction{ std::get<1>(arguments) };
+			auto arguments{ event.GetArgumentsAsTuple<dae::TileCoordinates, dae::TileCoordinates, int>() };
+			auto pos		{ std::get<0>(arguments) };
+			auto direction	{ std::get<1>(arguments) };
+			auto targetID	{ std::get<2>(arguments) };
 
 			std::tuple<bool, glm::vec3, dae::TileCoordinates> newEventArguments{ DoesTileExist(pos.m_Column + direction.m_Column, pos.m_Row + direction.m_Row), ConvertToWorld(direction.m_Column, direction.m_Row), direction };
 
-			Event eventToNotify{ dae::EventType::ConfirmMovement, newEventArguments, -1 };
+			Event eventToNotify{ dae::EventType::ConfirmMovement, newEventArguments, targetID };
 
 			dae::EventManager::GetInstance().PushEvent(eventToNotify);
 		}

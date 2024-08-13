@@ -8,5 +8,6 @@ namespace dae
 		QBertJump,
 		LevelDone,
 		Swearing,
+		CoilyEggJump,
 	};
 }

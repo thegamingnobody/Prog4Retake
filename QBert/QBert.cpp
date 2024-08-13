@@ -19,7 +19,7 @@ void load()
 {
 	dae::ServiceLocator::RegisterSoundSystem(std::make_unique<dae::DAE_SDL_SoundSystem>());
 
-	std::vector<std::string> m_SoundfilePaths{ "../Data/Sounds/QBert Jump.wav", "../Data/Sounds/Round Complete Tune.wav", "../Data/Sounds/Swearing.wav" };
+	std::vector<std::string> m_SoundfilePaths{ "../Data/Sounds/QBert Jump.wav", "../Data/Sounds/Round Complete Tune.wav", "../Data/Sounds/Swearing.wav", "../Data/Sounds/Coily Egg Jump.wav" };
 
 	for (int soundIndex = 0; soundIndex < m_SoundfilePaths.size(); soundIndex++)
 	{
@@ -94,7 +94,7 @@ void load()
 
 #pragma region player
 	
-		auto curseGo = std::make_shared<dae::GameObject>("PlayerCurse", 5);
+		auto curseGo = std::make_shared<dae::GameObject>("PlayerCurse", 1);
 	{
 		dae::SourceRectangle sourceRect = dae::SourceRectangle(48.0f, 25.0f, 48.0f, 25.0f, 0.0f, 0.0f);
 
@@ -109,7 +109,8 @@ void load()
 	
 
 	{
-		go = std::make_shared<dae::GameObject>("Player", -1);
+		go = std::make_shared<dae::GameObject>("Player", 1);
+		
 		dae::SourceRectangle sourceRect = dae::SourceRectangle(64.0f, 16.0f, 16.0f, 16.0f, 48.0f, 0.0f);
 
 		auto& textureComponent = go->AddComponent<dae::TextureComponent>("Qbert1.png", sourceRect, globalZoom);
@@ -118,31 +119,28 @@ void load()
 		go->AddComponent<dae::TransformComponent>(	static_cast<float>(dae::Minigin::m_WindowWidth  * 0.50f) - (textureDimentions.x * 0.00f),
 													static_cast<float>(dae::Minigin::m_WindowHeight * 0.25f) - (textureDimentions.y * 1.50f));
 		
-		go->AddComponent<dae::QbertComponent>(curseGo.get());
-
-		//auto& counterComponent = go->AddComponent<dae::CounterComponent>();
-		//counterComponent.AddCounter("Lives", dae::CounterTypes::Lives, 4, true);
-
-		scene.Add(go);
 	}
+	auto& playerComponent = go->AddComponent<dae::QbertComponent>(curseGo.get());
+
+	scene.Add(go);
 
 #pragma endregion
 
 #pragma region Enemies
 	
 	{
-		//go = std::make_shared<dae::GameObject>("Player", -1);
-		//dae::SourceRectangle sourceRect = dae::SourceRectangle(64.0f, 16.0f, 16.0f, 16.0f, 48.0f, 0.0f);
+		go = std::make_shared<dae::GameObject>("Coily", 2);
+		dae::SourceRectangle sourceRect = dae::SourceRectangle(160.0f, 32.0f, 16.0f, 32.0f, 16.0f, 0.0f);
 
-		//auto& textureComponent = go->AddComponent<dae::TextureComponent>("Qbert1.png", sourceRect, globalZoom);
-		//auto textureDimentions = textureComponent.GetSize();
+		auto& textureComponent = go->AddComponent<dae::TextureComponent>("Coily.png", sourceRect, globalZoom);
+		auto textureDimentions = textureComponent.GetSize();
 
-		//go->AddComponent<dae::TransformComponent>(	static_cast<float>(dae::Minigin::m_WindowWidth  * 0.50f) - (textureDimentions.x * 0.00f),
-		//											static_cast<float>(dae::Minigin::m_WindowHeight * 0.25f) - (textureDimentions.y * 1.50f));
+		go->AddComponent<dae::TransformComponent>(	static_cast<float>(dae::Minigin::m_WindowWidth  * 0.50f) - (textureDimentions.x * 0.00f),
+													static_cast<float>(dae::Minigin::m_WindowHeight * 0.25f) - (textureDimentions.y * 1.60f));
 		
-		//go->AddComponent<dae::QbertComponent>(curseGo.get());
+		go->AddComponent<dae::CoilyComponent>(playerComponent);
 
-		//scene.Add(go);
+		scene.Add(go);
 	}
 
 #pragma endregion

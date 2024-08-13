@@ -1,16 +1,16 @@
-#ifndef QBERT_STATES
-#define QBERT_STATES
+#pragma once
 
 #include "State.h"
 #include <glm/ext/vector_float3.hpp>
 #include <Level.h>
 
+
 namespace dae
 {
-	class JumpingState : public State
+	class CoilyJumpingState : public State
 	{
 	public:
-		JumpingState(GameObject* object, const glm::vec3& direction, float jumpTime, bool isTileValid);
+		CoilyJumpingState(GameObject* object, const glm::vec3& direction, float jumpTime, bool isTileValid);
 
 		void OnEnter() override;
 		void Update(float const deltaTime) override;
@@ -23,10 +23,10 @@ namespace dae
 		bool m_IsTileValid;
 	};
 
-	class RequestingMovementState : public State, public Observer
+	class CoilyRequestingMovementState : public State, public Observer
 	{
 	public:
-		RequestingMovementState(GameObject* object);
+		CoilyRequestingMovementState(GameObject* object);
 
 		void OnEnter() override;
 		void Update(float const deltaTime) override;
@@ -35,10 +35,10 @@ namespace dae
 		void Notify(const Event& event) override;
 	};
 
-	class FinishMovementState : public State, public Observer
+	class CoilyFinishMovementState : public State, public Observer
 	{
 	public:
-		FinishMovementState(GameObject* object);
+		CoilyFinishMovementState(GameObject* object);
 
 		void OnEnter() override;
 		void Update(float const deltaTime) override;
@@ -47,10 +47,10 @@ namespace dae
 		void Notify(const Event& event) override;
 	};
 
-	class IdleState : public State, public Observer
+	class CoilyIdleState : public State, public Observer
 	{
 	public:
-		IdleState(GameObject* object);
+		CoilyIdleState(GameObject* object);
 
 		void OnEnter() override;
 		void Update(float const deltaTime) override;
@@ -58,26 +58,13 @@ namespace dae
 
 		void Notify(const Event& event) override;
 	private:
-		bool m_AllowMovement;
-	};
+		int CalculateNextDirectionID();
 
-	class DeathState : public State, public Observer
-	{
-	public:
-		DeathState(GameObject* object, float deathTimer);
-
-		void OnEnter() override;
-		void Update(float const deltaTime) override;
-		void OnExit() override;
-
-		void Notify(const Event& event) override;
-
-	private:
-		float m_DeathTimer;
 		float m_AccumulatedTime;
-		bool m_StopTimer;
+
+		std::vector<glm::vec3> m_Directions;
 	};
- 
+
 }
 
-#endif
+

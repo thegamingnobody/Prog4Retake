@@ -11,6 +11,7 @@ dae::TransformComponent::TransformComponent(dae::GameObject* object, float const
 	, m_Direction(Transform(0, 0, 0))
 	, m_AccumulatedTime(0.0f)
 	, m_IsMoving()
+	, m_SlideTime()
 {
 	m_TargetNumber = object->GetObjectID();
 	dae::EventManager::GetInstance().AddObserver(this, dae::EventType::MoveObject);

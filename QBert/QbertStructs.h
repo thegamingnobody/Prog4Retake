@@ -8,6 +8,9 @@ namespace dae
 			, m_Row(row)
 		{}
 
+		TileCoordinates operator-(const TileCoordinates& other) const;
+		TileCoordinates operator+(const TileCoordinates& other) const;
+
 		int m_Column;
 		int m_Row;
 	};

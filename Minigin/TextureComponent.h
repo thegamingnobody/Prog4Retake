@@ -49,6 +49,8 @@ namespace dae
 		void SetSourceRectangle(float srcPosX, float srcPosY, float srcWidth, float srcHeight);
 		void SetSourceRectangle(const SourceRectangle& newSourceRect);
 
+		SourceRectangle GetSourceRectangle() const { return m_SrcRect; }
+
 		void SetRenderScale(float newScale);
 		float GetRenderScale() const { return m_RenderScale; }
 

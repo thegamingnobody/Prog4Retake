@@ -5,7 +5,6 @@
 #include <EventManager.h>
 #include <ServiceLocator.h>
 #include "SFXEnum.h"
-#include "CountersComponent.h"
 
 dae::JumpingState::JumpingState(GameObject* object, const glm::vec3& direction, float jumpTime, bool isTileValid)
 	: State(object)
@@ -14,6 +13,7 @@ dae::JumpingState::JumpingState(GameObject* object, const glm::vec3& direction, 
 	, m_Direction(direction)
 	, m_IsTileValid(isTileValid)
 {
+	
 }
 
 void dae::JumpingState::OnEnter()
@@ -45,6 +45,7 @@ dae::IdleState::IdleState(GameObject* object)
 	: State(object)
 	, m_AllowMovement(true)
 {
+	m_TargetNumber = object->GetObjectID();
 }
 
 void dae::IdleState::OnEnter()
@@ -75,7 +76,7 @@ void dae::IdleState::Notify(const Event& event)
 				TileCoordinates TilesDirection{static_cast<int>(arguments.x), static_cast<int>(arguments.y)};
 				auto coords = GetObject()->GetComponent<dae::QbertComponent>()->GetCoords();
 
-				std::tuple<TileCoordinates, TileCoordinates> eventArguments{ coords, TilesDirection };
+				std::tuple<TileCoordinates, TileCoordinates, int> eventArguments{ coords, TilesDirection, GetObject()->GetObjectID() };
 				Event eventToNotify{ dae::EventType::IsTileValid, eventArguments, -1 };
 				dae::EventManager::GetInstance().PushEvent(eventToNotify);
 
@@ -96,6 +97,7 @@ void dae::IdleState::Notify(const Event& event)
 dae::RequestingMovementState::RequestingMovementState(GameObject* object)
 	: State(object)
 {
+	m_TargetNumber = object->GetObjectID();
 }
 
 void dae::RequestingMovementState::OnEnter()
@@ -133,6 +135,7 @@ void dae::RequestingMovementState::Notify(const Event& event)
 dae::FinishMovementState::FinishMovementState(GameObject* object)
 	: State(object)
 {
+	m_TargetNumber = object->GetObjectID();
 }
 
 void dae::FinishMovementState::OnEnter()
@@ -193,7 +196,7 @@ dae::DeathState::DeathState(GameObject* object, float deathTimer)
 	, m_AccumulatedTime(0.0f)
 	, m_StopTimer(false)
 {
-
+	m_TargetNumber = object->GetObjectID();
 }
 
 void dae::DeathState::OnEnter()
